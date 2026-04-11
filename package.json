@@ -20,7 +20,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-react": "^0.287.0",
-    "next": "^16.1.6",
+    "next": "^16.2.3",
     "react": "^18",
     "react-dom": "^18",
     "react-type-animation": "^3.2.0",
