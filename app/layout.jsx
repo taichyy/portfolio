@@ -5,7 +5,7 @@ import "../public/icomoon/style.css";
 import ProviderAOS from "@/components/providers/provider-aos"
 
 export const metadata = {
-    title: "Tai's taiche.tw | HOME",
+    title: "Tai | HOME",
     description: 'Tai-Cheng, Yen － 個人介紹、作品集、履歷網頁',
 }
 
