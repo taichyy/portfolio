@@ -13,10 +13,10 @@ export default function Hamburger() {
             text: "回首頁",
             href: "/"
         },
-        // {
-        //     text: "關於我",
-        //     href: "/about"
-        // },
+        {
+            text: "關於我",
+            href: "/about"
+        },
         {
             text: "作品集",
             href: "/portfolio"

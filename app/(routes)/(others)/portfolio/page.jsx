@@ -12,6 +12,10 @@ import {
 import { portfolio } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
 
+export const metadata = {
+    title: "作品集",
+};
+
 const Portfolio = () => {
     const heading = "個人作品集";
     const description =

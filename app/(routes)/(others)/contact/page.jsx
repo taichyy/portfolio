@@ -1,8 +1,12 @@
 import Image from "next/image";
 
+export const metadata = {
+    title: "聯絡方式",
+};
+
 const Contact = () => {
     const data = {
-        contact_mail: "chinzeilulu@gmail.com",
+        contact_mail: "tai@heytai.dev",
     }
     
     return (

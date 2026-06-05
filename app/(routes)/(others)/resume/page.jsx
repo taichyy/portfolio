@@ -6,6 +6,10 @@ import BigImg from "@/components/bigImg";
 import JobBlock from "@/components/job-block";
 import ResumePercent from "@/components/resume-percent/resume-percent";
 
+export const metadata = {
+    title: "個人簡歷",
+};
+
 const Resume = () => {
     const data = {
         resume_name: "嚴太成",

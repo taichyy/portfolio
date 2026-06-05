@@ -2,10 +2,14 @@ import HomeBg from "./(components)/home-bg";
 import HomeBtn from "@/components/home-btn";
 import Hamburger from "@/components/hamburger/hamburger";
 
+export const metadata = {
+    title: "首頁",
+};
+
 export default function HomePage() {
     const data = {
-        home_intro: "我是 Tai，一名專注於 Next.js、擅長前端架構設計的全端工程師。\n\n具備完整系統開發與商業化經驗，曾獨立打造並成功上線 ERP 產品。",
-        home_mail: "chinzeilulu@gmail.com"
+        home_intro: "我是 Tai，華碩電腦軟體工程師。\n\n專注於 Next.js、擅長前端架構設計的全端工程師。\n\n具備完整系統開發與商業化經驗，曾打造並成功上線 ERP 產品。",
+        home_mail: "tai@heytai.dev"
     }
 
     return (

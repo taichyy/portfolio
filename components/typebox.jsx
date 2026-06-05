@@ -1,4 +1,5 @@
 "use client"
+
 import { TypeAnimation } from "react-type-animation";
 
 const TypeBox = ({sequence}) => {

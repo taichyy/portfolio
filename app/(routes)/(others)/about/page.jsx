@@ -10,6 +10,10 @@ import {
 import TypeBox from "@/components/typebox";
 import { badgeVariants } from "@/components/ui/badge"
 
+export const metadata = {
+    title: "關於我",
+};
+
 export default function About() {
     const data = {
         about_intro: "這是一頁我的個人介紹頁！\n若是想了解能力、背景、知識，\n請到：",

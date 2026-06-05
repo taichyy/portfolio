@@ -1,17 +1,19 @@
 "use client"
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 
 const HomeBg = () => {
-    const items = {
-        // 0: {
+    const items = [
+        // Hide in main page.
+        // {
         //     title: "關於我",
         //     img: "/images/home/home_mainbgc.jpg",
         //     alt: "Home background image by Tai-Cheng, Yen",
         //     link: "/about"
         // },
-        0: {
+        {
             title: "作品集",
             img: "/images/home/home_portfolio.jpg",
             alt: "Home background image for portfolio",
@@ -23,13 +25,13 @@ const HomeBg = () => {
         //     alt: "Home background image for resume",
         //     link: "/resume"
         // },
-        1: {
+        {
             title: "聯絡方式",
             img: "/images/home/home_contact.jpg",
             alt: "Home background image for contact page",
             link: "/contact"
         }
-    }
+    ]
     
     const [img, setImg] = useState(items[1].img)
 
@@ -48,14 +50,14 @@ const HomeBg = () => {
             />
             <nav className='mr-5 mb-10 text-2xl font-semibold z-10 md:mr-20 md:mb-20 md:text-4xl text-right duration-200' >
                 <div className='flex flex-col gap-8'>
-                    {Array.from({ length: Object.keys(items).length }).map((_, i) => (
+                    {items.map((item, i) => (
                         <span 
                             key={i} 
                             onMouseEnter={() => handleHover(i)} 
                             onMouseLeave={() => handleHover(0)}
                         >
-                            <Link href={items[i].link}>
-                                {items[i].title}
+                            <Link href={item.link}>
+                                {item.title}
                             </Link>
                         </span>
                     ))}
