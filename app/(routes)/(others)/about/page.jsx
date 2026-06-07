@@ -53,12 +53,12 @@ export default function About() {
             {
                 acc_title: "性格",
                 acc_title_en: "Personalities",
-                acc_desc: "總是喜歡嘗試一些新鮮的事物！\n總是保持樂觀、善良！"
+                acc_desc: "總是喜歡嘗試一些新鮮的事物！\n總是保持樂觀、善良！\n總是精進自己！"
             },
             {
                 acc_title: "興趣",
                 acc_title_en: "Interests",
-                acc_desc: "程式語言、攝影、檔車"
+                acc_desc: "程式語言、攝影"
             }
         ]
 
@@ -92,11 +92,11 @@ export default function About() {
                             {data.about_intro}
                         </p>
                         <div className="space-x-2">
-                            <Link href="/resume" className={badgeVariants({ variant: "" })}>
+                            {/* <Link href="/resume" className={badgeVariants({ variant: "" })}>
                                 <span className="text-sm">
                                     個人簡歷
                                 </span>
-                            </Link>
+                            </Link> */}
                             <Link href="/portfolio" className={badgeVariants({ variant: "" })}>
                                 <span className="text-sm">
                                     作 品 集
