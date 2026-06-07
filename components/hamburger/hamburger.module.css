@@ -95,11 +95,13 @@
     position: fixed;
     width: 25vw;
     height: 100vh;
+    height: 100dvh;
     padding: 50px;
     padding-top: 125px;
     top: 0;
     /* 將 right 設為負值，預設隱藏在畫面外 */
     right: -25vw; 
+    overflow-y: auto;
 
     background: #fff;
     list-style-type: none;
@@ -126,6 +128,8 @@
     .menu {
         right: -100vw;
         width: 100vw;
+        height: 100vh;
+        height: 100dvh;
     }
     /* 移動選單至畫面內 */
     .menuToggle input:checked ~ .menu {

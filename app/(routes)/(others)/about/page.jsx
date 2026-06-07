@@ -69,20 +69,20 @@ export default function About() {
             <div className="grid grid-cols-1 px-10 pt-10 pb-8 flex-grow gap-10 md:grid-cols-3 h-[70vh]">
                 <aside className="relative h-full">
                     <Image
-                        src="/images/about/bortwo.jpg"
+                        src="/images/about/jp.jpg"
                         alt="My pic"
                         fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 60vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 30vw"
                         className="object-cover h-0 md:h-full hover:opacity-80 duration-300"
                     />
                 </aside>
                 <main className="flex flex-col">
                     <div className="relative flex-grow h-56 md:h-full hidden md:block">
                         <Image
-                            src="/images/about/bike.jpg"
+                            src="/images/about/ninja.jpg"
                             alt="My pic"
                             fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 60vw"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 30vw"
                             className="object-cover hover:opacity-80 duration-300"
                         />
                     </div>
@@ -116,15 +116,15 @@ export default function About() {
                                             {item.acc_data.map((data, index) => (
                                                 <div key={index}>
                                                     <h3 className="text-base font-semibold">{data.data_title}</h3>
-                                                    <div className="flex gap-2 py-1.5">
+                                                    <div className="flex flex-wrap gap-2 py-1.5">
                                                         {data.data_skills.map((skill, index) => (
-                                                            <div key={index} className="flex gap-1.5">
+                                                            <div key={index} className="flex items-start gap-1.5">
                                                                 <Image
                                                                     src={`/images/about/${data.data_img[index]}`}
                                                                     alt={`${skill} Logo`}
                                                                     width={20}
                                                                     height={20}
-                                                                    className="aspect-square"
+                                                                    className="aspect-square flex-shrink-0"
                                                                 />
                                                                 <span>{skill}</span>
                                                             </div>
