@@ -1,4 +1,5 @@
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./globals.css"
 import "../public/icomoon/style.css";
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
         <html lang="en">
             <body className="font-sans min-h-screen bg-[#F3F3F3]">
                 <Analytics />
+                <SpeedInsights />
                 <ProviderAOS>
                     {children}
                 </ProviderAOS>
