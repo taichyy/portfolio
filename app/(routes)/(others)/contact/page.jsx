@@ -12,26 +12,33 @@ const Contact = () => {
     return (
         <div 
             data-aos="fade-in" 
-            className="h-screen flex flex-col-reverse md:flex-row items-center justify-center md:ml-5" 
+            className="h-screen flex flex-col-reverse md:flex-row items-center justify-center" 
         >
-            <div className="text-center">
-                <h3 className="text-2xl font-bold uppercase">
+            <Image
+                width={150}
+                height={150}
+                alt="personal logo"
+                src="/images/contact/logo-whitebg.png"
+                className="ml w-32 mb-10 md:ml-5 md:w-48 md:mb-0 block dark:hidden"
+            />
+            <Image
+                width={150}
+                height={150}
+                alt="personal logo"
+                src="/images/contact/logo-blackbg.png"
+                className="ml w-32 mb-10 md:ml-5 md:w-48 md:mb-0 hidden dark:block"
+            />
+            <div className="text-center ml-8">
+                <h3 className="text-2xl font-bold uppercase text-foreground">
                     contact me
                     <br />
                     聯絡我
                 </h3>
-                <h4 className="mt-5">
+                <h4 className="mt-5 text-muted-foreground">
                     <span className="icon-gmail mr-2"></span>
                     {data.contact_mail}
                 </h4>
             </div>
-            <Image
-                width={280}
-                height={200}
-                alt="personal logo"
-                src="/images/contact/logo.png"
-                className="ml w-48 mb-10 md:ml-5 md:w-72 md:mb-0"
-            />
         </div>
     );
 }

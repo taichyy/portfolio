@@ -2,7 +2,7 @@
     width: 100%;
     border-radius: 5px;
     height: 5px;
-    background-color: #ccc;
+    background-color: hsl(var(--muted));
 }
 .ResumePercentInner {
     height: 100%;

@@ -91,7 +91,7 @@ const Content = ({
 
     return (
 
-        <div className="mt-2 relative grid-cols-3 gap-20 lg:grid text-slate-800 leading-8">
+        <div className="mt-2 relative grid-cols-3 gap-20 lg:grid text-foreground leading-8">
             <div className="lg:col-span-2">
                 <div>
                     <div className="flex justify-between items-center -mt-1 mb-4">

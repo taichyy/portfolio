@@ -11,17 +11,17 @@ export default function HomePage() {
     }
 
     return (
-        <div className="h-dvh bg-[#f3f3f3] flex flex-row text-slate-800">
-            <aside className='bg-white flex flex-col gap-10 px-[1.5rem] pt-[5rem]'>
+        <div className="h-dvh bg-background flex flex-row text-foreground">
+            <aside className='bg-card flex flex-col gap-10 px-[1.5rem] pt-[9rem]'>
                 <div className=' flex flex-col gap-8' data-aos="fade-up" data-aos-duration="1000">
                     <div className='flex flex-col gap-3'>
-                        <h3 className='text-[#999]'>INTRO.</h3>
+                        <h3 className='text-muted-foreground'>INTRO.</h3>
                         <p className='leading-8 text-justify whitespace-pre-line'>
                             {data.home_intro}
                         </p>
                     </div>
                     <div className='text-sm flex flex-col gap-3'>
-                        <h3 className='text-[#999]'>CONTACT.</h3>
+                        <h3 className='text-muted-foreground'>CONTACT.</h3>
                         <div className='flex flex-col gap-1'>
                             <div className='break-all'>
                                 <span className='icon-gmail pr-2' />

@@ -19,10 +19,10 @@ export default function BigImg({ bgc, bgAlt, name, height }) {
                 font-extrabold duration-300
             ">
                 {/* bgc */}
-                <div className='bg-white opacity-30 w-full h-full absolute top-0 left-0 hover:opacity-40 duration-200' />
+                <div className='bg-white dark:bg-slate-800 opacity-30 w-full h-full absolute top-0 left-0 hover:opacity-40 duration-200' />
                 {/* content */}
-                <div className=' text-black text-2xl w-full'>
-                    <div className="flex justify-between items-center pb-5 mb-3 border-b-2 border-slate-400">
+                <div className='text-foreground text-2xl w-full'>
+                    <div className="flex justify-between items-center pb-5 mb-3 border-b-2 border-border">
                         <h2>
                             個人履歷
                         </h2>

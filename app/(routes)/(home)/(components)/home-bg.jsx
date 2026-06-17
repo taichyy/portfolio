@@ -46,7 +46,7 @@ const HomeBg = () => {
                 alt="Main image of website"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 60vw"
-                className='opacity-20 hover:opacity-50 duration-200 z-0 object-cover'
+                className='opacity-20 dark:opacity-50 hover:opacity-50 dark:hover:opacity-70 duration-200 z-0 object-cover'
                 loading="eager"
             />
             <nav className='mr-5 mb-10 text-2xl font-semibold z-10 md:mr-20 md:mb-20 md:text-4xl text-right duration-200' >

@@ -116,7 +116,7 @@ const Resume = () => {
 
     return (
         <div>
-            <BigImg
+            {/* <BigImg
                 bgc="/images/resume/big.jpeg"
                 bgAlt="Main resume background image."
                 name={data.resume_name}
@@ -136,13 +136,13 @@ const Resume = () => {
                     </h2>
                     {data?.resume_edu?.map((edu, index) => (
                         <div className="pl-5 pt-3" key={index}>
-                            <h3 className=" text-slate-500">
+                            <h3 className="text-muted-foreground">
                                 {edu.edu_duration[0]} - {edu.edu_duration[1]}
                             </h3>
-                            <h3 className="font-bold text-lg pt-3 text-slate-950">
+                            <h3 className="font-bold text-lg pt-3 text-foreground">
                                 {edu.edu_school}
                             </h3>
-                            <h4 className="text-sm text-slate-500">{edu.edu_dept}</h4>
+                            <h4 className="text-sm text-muted-foreground">{edu.edu_dept}</h4>
                         </div>
                     ))}
                 </div>
@@ -168,10 +168,10 @@ const Resume = () => {
                     </h2>
                     {data?.resume_skills?.map((skill, index) => (
                         <div className="pl-5 pt-3" key={index}>
-                            <h3 className="font-bold text-lg pt-3 text-slate-950">
+                            <h3 className="font-bold text-lg pt-3 text-foreground">
                                 {skill.skill_title}
                             </h3>
-                            <div className="bg-white px-5 py-6 mt-2 mr-5">
+                            <div className="bg-card px-5 py-6 mt-2 mr-5 rounded-md">
                                 <ul className="space-y-3">
                                     {skill.skill_desc.map((desc, index) => (
                                         <li key={index}>
@@ -189,7 +189,7 @@ const Resume = () => {
                         自我介紹
                     </h2>
                     <div className="pl-5 pt-3">
-                        <p className="bg-white px-5 py-6 mt-2 mr-5 mb-6 whitespace-pre-line">
+                        <p className="bg-card px-5 py-6 mt-2 mr-5 mb-6 whitespace-pre-line rounded-md">
                             {data.resume_intro}
                         </p>
                     </div>
@@ -199,8 +199,8 @@ const Resume = () => {
                         外語能力
                     </h2>
                     <div className="pl-5 pt-3">
-                        <h3 className="font-bold text-lg pt-3 text-slate-950">英語</h3>
-                        <h4 className="text-sm text-slate-500">TOEIC多益 795分</h4>
+                        <h3 className="font-bold text-lg pt-3 text-foreground">英語</h3>
+                        <h4 className="text-sm text-muted-foreground">TOEIC多益 795分</h4>
                     </div>
                 </div>
                 <div>
@@ -215,13 +215,13 @@ const Resume = () => {
                                 alt={freelance.freelance_alt}
                                 width={200}
                                 height={200}
-                                className=" w-auto h-12 px-4 my-3 mr-auto ml-auto aspect-auto"
+                                className="w-auto h-12 px-4 my-3 mr-auto ml-auto aspect-auto dark:invert"
                             />
                         ))}
                     </div>
-                    <h3 className="text-sm text-right pr-4 pt-2 text-slate-500">
+                    <h3 className="text-sm text-right pr-4 pt-2 text-muted-foreground">
                         ......詳細請移至
-                        <Link href="/portfolio" className=" font-semibold text-slate-950">
+                        <Link href="/portfolio" className="font-semibold text-foreground">
                             作品集頁面
                         </Link>
                     </h3>
@@ -233,7 +233,7 @@ const Resume = () => {
                     <div className="pl-5 pt-3">
                         {data?.resume_certificates?.map((certificate, index) => (
                             <Fragment key={index}>
-                                <h3 className="font-bold text-lg pt-3 text-slate-950">
+                                <h3 className="font-bold text-lg pt-3 text-foreground">
                                     <Image
                                         src={certificate.certificate_src}
                                         alt={certificate.certificate_alt}
@@ -241,14 +241,14 @@ const Resume = () => {
                                         height={75}
                                     />
                                 </h3>
-                                <h4 className="text-sm text-slate-500">
+                                <h4 className="text-sm text-muted-foreground">
                                     {certificate.certificate_title}
                                 </h4>
                             </Fragment>
                         ))}
                     </div>
                 </div>
-            </main>
+            </main> */}
         </div>
     );
 };

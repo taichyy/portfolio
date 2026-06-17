@@ -45,7 +45,7 @@ const PortfolioMore = ({data}) => {
     return ( 
     <Dialog>
         <DialogTrigger>
-            <div className="cursor-pointer border-2 border-[#e31b6d] mt-10 py-1 px-5 hover:bg-[#e31b6d] duration-200 hover:text-white">
+            <div className="cursor-pointer border-2 border-primary mt-10 py-1 px-5 hover:bg-primary duration-200 hover:text-primary-foreground">
                 了解更多
             </div>
         </DialogTrigger>
@@ -77,13 +77,13 @@ const PortfolioMore = ({data}) => {
                     <DialogClose asChild>
                         {data.link != "" ? (
                             <a href={data.link} target="_blank">
-                                <Button type="button" variant="secondary" className="flex text-white w-fit px-6 bg-[#e31b6d] rounded-none hover:bg-white hover:text-[#e31b6d] border-0">
+                                <Button type="button" variant="secondary" className="flex text-primary-foreground w-fit px-6 bg-primary rounded-none hover:bg-primary/80 border-0">
                                     <ArrowUpRightSquare width={18} className="mr-1 mt-1"/>
                                     參觀作品
                                 </Button>
                             </a>
                         ) : (
-                            <Button type="button" variant="secondary" className="flex text-white w-fit px-6 bg-[#e31b6d] rounded-none hover:bg-white hover:text-[#e31b6d] border-0">
+                            <Button type="button" variant="secondary" className="flex text-primary-foreground w-fit px-6 bg-primary rounded-none hover:bg-primary/80 border-0">
                                 <X width={18} className="mr-1"/>
                                 本項目暫無連結
                             </Button>

@@ -124,7 +124,7 @@ export default function About() {
                                                                     alt={`${skill} Logo`}
                                                                     width={20}
                                                                     height={20}
-                                                                    className="aspect-square flex-shrink-0"
+                                                                    className="aspect-square flex-shrink-0 bg-white"
                                                                 />
                                                                 <span>{skill}</span>
                                                             </div>
