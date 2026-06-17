@@ -1,8 +1,6 @@
 import Image from 'next/image';
 
-import HomeBtn from '@/components/home-btn';
-
-export default function BigImg({ bgc, bgAlt, name, btn, height }) {
+export default function BigImg({ bgc, bgAlt, name, height }) {
 
     return (
         <div className={`relative ${height == "full" ? "h-screen" : "h-[80vh]"}`}>
@@ -39,8 +37,6 @@ export default function BigImg({ bgc, bgAlt, name, btn, height }) {
                     </div>
                 </div>
             </div>
-            {btn == true ? <HomeBtn type="fixed" /> : null}
-            {btn === 'md' ? <HomeBtn type="fixed" className="hidden md:flex" /> : null}
         </div>
     )
 }

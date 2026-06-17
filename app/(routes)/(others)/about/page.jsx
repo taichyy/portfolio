@@ -18,7 +18,7 @@ export default function About() {
     const data = {
         about_intro: "這是一頁我的個人介紹頁！\n若是想了解能力、背景、知識，\n請到：",
         about_sequence: [
-            'MAKE IT REALITY!',
+            'MAKE IT REAL!',
             1000,
             '將想法變成現實！',
             1000,
