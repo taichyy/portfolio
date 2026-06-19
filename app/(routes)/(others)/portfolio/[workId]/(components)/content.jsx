@@ -3,7 +3,6 @@
 import {
     AlignLeft,
     ArrowLeft,
-    ArrowRight,
     Lightbulb,
     ListChecks,
 } from "lucide-react";
@@ -11,6 +10,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselPrevious,
+    CarouselNext,
+} from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -65,29 +71,17 @@ const Content = ({
         }
     };
 
-    // For image gallery
-    const [num, setNum] = useState(0)
-    const [imgOpacity, setImgOpacity] = useState('opacity-100')
+    // For carousel index indicator
+    const [carouselApi, setCarouselApi] = useState(null);
+    const [currentSlide, setCurrentSlide] = useState(1);
+    const totalSlides = work.img.length;
 
-    const handleClick = (status) => {
-        if (status == true) {
-            if (num != work.img.length - 1) {
-                setNum(prev => prev + 1)
-                setImgOpacity('opacity-0')
-                setTimeout(() => {
-                    setImgOpacity('opacity-100')
-                }, 300)
-            }
-        } else {
-            if (num != 0) {
-                setNum(prev => prev - 1)
-                setImgOpacity('opacity-0')
-                setTimeout(() => {
-                    setImgOpacity('opacity-100')
-                }, 300)
-            }
-        }
-    }
+    useEffect(() => {
+        if (!carouselApi) return;
+        const onSelect = () => setCurrentSlide(carouselApi.selectedScrollSnap() + 1);
+        carouselApi.on("select", onSelect);
+        return () => { carouselApi.off("select", onSelect); };
+    }, [carouselApi]);
 
     return (
 
@@ -145,20 +139,40 @@ const Content = ({
                         </p>
                     )}
                     <div className="md:mx-3 my-16" data-aos="fade-up">
-                        <Image
-                            src={work.img[num]}
-                            alt={`${work.img[num].split('/')[work.img[num].split('/').length - 1]} Image`}
-                            width={1920}
-                            height={1080}
-                            className={cn(
-                                "aspect-video w-full hover:opacity-95 duration-300 mx-auto mb-2",
-                                imgOpacity
-                            )}
-                        />
-                        <div className="flex justify-between mt-1">
-                            <ArrowLeft className={`cursor-pointer duration-100 ${num == 0 && 'opacity-0 cursor-default'}`} size={30} onClick={() => handleClick(false)} />
-                            <ArrowRight className={`cursor-pointer duration-100 ${num == work.img.length - 1 && 'opacity-0 cursor-default'}`} size={30} onClick={() => handleClick(true)} />
-                        </div>
+                        <Carousel className="w-full" opts={{ loop: true }} setApi={setCarouselApi}>
+                            <CarouselContent>
+                                {work.img.map((src, index) => (
+                                    <CarouselItem key={index}>
+                                        <Image
+                                            src={src}
+                                            alt={`${src.split('/')[src.split('/').length - 1]} Image`}
+                                            width={1920}
+                                            height={1080}
+                                            className="aspect-video w-full rounded-md object-cover"
+                                        />
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious className="left-2 bg-background/80 backdrop-blur-sm" />
+                            <CarouselNext className="right-2 bg-background/80 backdrop-blur-sm" />
+                        </Carousel>
+                        {totalSlides > 1 && (
+                            <div className="flex justify-center gap-1.5 mt-3">
+                                {work.img.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => carouselApi?.scrollTo(index)}
+                                        className={cn(
+                                            "h-1.5 rounded-full transition-all duration-300",
+                                            currentSlide === index + 1
+                                                ? "w-4 bg-primary"
+                                                : "w-1.5 bg-muted-foreground/30"
+                                        )}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
                 {work?.data && work.data.map((section, sectionIndex) => (
