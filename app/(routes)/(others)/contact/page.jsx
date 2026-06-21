@@ -19,16 +19,16 @@ const Contact = () => {
                 height={150}
                 alt="personal logo"
                 src="/images/contact/logo-whitebg.png"
-                className="ml w-32 mb-10 md:ml-5 md:w-48 md:mb-0 block dark:hidden"
+                className="w-32 mb-10 md:ml-5 md:w-48 md:mb-0 block dark:hidden"
             />
             <Image
                 width={150}
                 height={150}
                 alt="personal logo"
                 src="/images/contact/logo-blackbg.png"
-                className="ml w-32 mb-10 md:ml-5 md:w-48 md:mb-0 hidden dark:block"
+                className="w-32 mb-10 md:ml-5 md:w-48 md:mb-0 hidden dark:block"
             />
-            <div className="text-center ml-8">
+            <div className="text-center md:ml-8 mb-4">
                 <h3 className="text-2xl font-bold uppercase text-foreground">
                     contact me
                     <br />
