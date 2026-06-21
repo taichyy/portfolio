@@ -20,6 +20,7 @@ const Contact = () => {
                 alt="personal logo"
                 src="/images/contact/logo-whitebg.png"
                 className="w-32 mb-10 md:ml-5 md:w-48 md:mb-0 block dark:hidden"
+                loading="eager"
             />
             <Image
                 width={150}
@@ -27,6 +28,7 @@ const Contact = () => {
                 alt="personal logo"
                 src="/images/contact/logo-blackbg.png"
                 className="w-32 mb-10 md:ml-5 md:w-48 md:mb-0 hidden dark:block"
+                loading="eager"
             />
             <div className="text-center md:ml-8 mb-4">
                 <h3 className="text-2xl font-bold uppercase text-foreground">
