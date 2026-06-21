@@ -100,6 +100,8 @@ const NavResponsive = () => {
     useEffect(() => { setOpen(false); setPortfolioOpen(false) }, [pathname])
 
     useEffect(() => {
+        !open && setMobileWorksOpen(false);
+        
         if (open || mobilePortfolioOpen) {
             document.documentElement.style.overflow = 'hidden'
             return () => { document.documentElement.style.overflow = '' }
