@@ -28,7 +28,7 @@ const Portfolio = () => {
             <section className="py-20 md:py-32 bg-gradient-to-b from-background via-background to-secondary/5">
                 <div className="container mx-auto px-4 flex flex-col items-start">
                     {/* Header */}
-                    <div className="w-full max-w-6xl mx-auto mb-12 md:mb-16">
+                    <div className="w-full max-w-6xl mx-auto mb-12 md:mb-16 mt-4 md:mt-0">
                         <h2
                             data-aos="fade-in"
                             data-aos-duration="1000"
