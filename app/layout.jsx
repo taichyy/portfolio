@@ -12,6 +12,10 @@ export const metadata = {
         template: "%s | Tai",
     },
     description: 'Tai-Cheng, Yen － 個人介紹、作品集、履歷網頁',
+    themeColor: [
+        { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+        { media: "(prefers-color-scheme: dark)", color: "#080c18" },
+    ],
 }
 
 export default function RootLayout({ children }) {
