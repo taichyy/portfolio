@@ -15,7 +15,11 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 export const metadata = {
-    title: "作品集",
+    title: "作品集 Portfolio",
+    description: "嚴太成的網頁開發作品集，涵蓋 Next.js、TypeScript、MongoDB 等技術。包含企業官網、ERP 系統、密碼管理器、海報生成系統等實務與開源作品。",
+    alternates: {
+        canonical: "/portfolio",
+    },
 };
 
 const Portfolio = () => {

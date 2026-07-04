@@ -1,7 +1,11 @@
 import Image from "next/image";
 
 export const metadata = {
-    title: "聯絡方式",
+    title: "聯絡方式 Contact",
+    description: "與嚴太成（Tai）聯絡——歡迎工作機會、專案合作與技術交流。Email: tai@heytai.dev",
+    alternates: {
+        canonical: "/contact",
+    },
 };
 
 const Contact = () => {

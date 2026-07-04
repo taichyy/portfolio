@@ -11,7 +11,11 @@ import TypeBox from "@/components/typebox";
 import { badgeVariants } from "@/components/ui/badge"
 
 export const metadata = {
-    title: "關於我",
+    title: "關於我 About",
+    description: "認識嚴太成（Tai）——全端網頁工程師的技能、興趣與背景。熟悉 JavaScript、TypeScript、React、Next.js、MongoDB 等技術。",
+    alternates: {
+        canonical: "/about",
+    },
 };
 
 export default function About() {

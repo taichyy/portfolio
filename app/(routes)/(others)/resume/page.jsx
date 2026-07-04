@@ -7,7 +7,11 @@ import JobBlock from "@/components/job-block";
 import ResumePercent from "@/components/resume-percent/resume-percent";
 
 export const metadata = {
-    title: "個人簡歷",
+    title: "個人簡歷 Resume",
+    description: "嚴太成的個人簡歷——學歷、工作經歷與技能。高級前端網頁工程師，具備 ERP 系統從 0 到 1 的架構設計與商業化開發經驗。",
+    alternates: {
+        canonical: "/resume",
+    },
 };
 
 const Resume = () => {

@@ -1,7 +1,10 @@
 import HomeBg from "./(components)/home-bg";
 
 export const metadata = {
-    title: "首頁",
+    description: "我是 Tai（嚴太成），專注於 Next.js、擅長前端架構設計的全端網頁工程師。具備完整系統開發與商業化經驗，曾打造並成功上線 ERP 產品。",
+    alternates: {
+        canonical: "/",
+    },
 };
 
 export default function HomePage() {
@@ -12,6 +15,7 @@ export default function HomePage() {
 
     return (
         <div className="h-dvh bg-background flex flex-row text-foreground">
+            <h1 className="sr-only">Tai 嚴太成－全端網頁工程師 Full-Stack Web Developer</h1>
             <aside className='bg-card flex flex-col gap-10 px-[1.5rem] pt-[9rem]'>
                 <div className=' flex flex-col gap-8' data-aos="fade-up" data-aos-duration="1000">
                     <div className='flex flex-col gap-3'>
