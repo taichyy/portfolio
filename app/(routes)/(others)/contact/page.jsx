@@ -1,52 +1,79 @@
-import Image from "next/image";
+"use client"
 
-export const metadata = {
-    title: "聯絡方式 Contact",
-    description: "與嚴太成（Tai）聯絡——歡迎工作機會、專案合作與技術交流。Email: tai@heytai.dev",
-    alternates: {
-        canonical: "/contact",
-    },
-};
+import Image from "next/image"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
+import { ArrowUpRight } from "lucide-react"
+
+import { profile } from "@/lib/profile"
 
 const Contact = () => {
-    const data = {
-        contact_mail: "tai@heytai.dev",
-    }
-    
+    const { resolvedTheme } = useTheme()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
     return (
-        <div 
-            data-aos="fade-in" 
-            className="h-screen flex flex-col-reverse md:flex-row items-center justify-center" 
-        >
-            <Image
-                width={150}
-                height={150}
-                alt="personal logo"
-                src="/images/contact/logo-whitebg.png"
-                className="w-32 mb-10 md:ml-5 md:w-48 md:mb-0 block dark:hidden"
-                loading="eager"
-            />
-            <Image
-                width={150}
-                height={150}
-                alt="personal logo"
-                src="/images/contact/logo-blackbg.png"
-                className="w-32 mb-10 md:ml-5 md:w-48 md:mb-0 hidden dark:block"
-                loading="eager"
-            />
-            <div className="text-center md:ml-8 mb-4">
-                <h3 className="text-2xl font-bold uppercase text-foreground">
-                    contact me
-                    <br />
-                    聯絡我
-                </h3>
-                <h4 className="mt-5 text-muted-foreground">
-                    <span className="icon-gmail mr-2"></span>
-                    {data.contact_mail}
-                </h4>
+        <section className="mx-auto flex min-h-[70vh] max-w-[1240px] flex-col justify-center px-6 pt-32 pb-12 md:pt-40">
+            {/* Logo */}
+            {mounted && (
+                <div className="relative mb-6 h-16 w-16 animate-fade-up md:h-20 md:w-20">
+                    <Image
+                        src={resolvedTheme === 'dark' ? '/logo-white.png' : '/logo-dark.png'}
+                        alt="Tai Logo"
+                        fill
+                        className="object-contain"
+                        priority
+                    />
+                </div>
+            )}
+
+            <p className="label-mono">Contact</p>
+            <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.15] md:text-6xl">
+                {profile.contact.heading}
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
+                {profile.contact.body}
+            </p>
+
+            <div className="mt-12 max-w-xl divide-y divide-line border-y border-line">
+                <a
+                    href={`mailto:${profile.contact.email}`}
+                    className="group flex items-center justify-between py-5"
+                >
+                    <span>
+                        <span className="label-mono block">Email</span>
+                        <span className="mt-1 block font-mono text-lg transition-colors group-hover:text-signature">
+                            {profile.contact.email}
+                        </span>
+                    </span>
+                    <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signature" />
+                </a>
+
+                {profile.socials
+                    .filter((s) => s.label !== "Email")
+                    .map((s) => (
+                        <a
+                            key={s.label}
+                            href={s.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-center justify-between py-5"
+                        >
+                            <span>
+                                <span className="label-mono block">{s.label}</span>
+                                <span className="mt-1 block font-mono text-lg transition-colors group-hover:text-signature">
+                                    {s.href.replace(/^https?:\/\//, "")}
+                                </span>
+                            </span>
+                            <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signature" />
+                        </a>
+                    ))}
             </div>
-        </div>
-    );
+        </section>
+    )
 }
 
-export default Contact;
+export default Contact

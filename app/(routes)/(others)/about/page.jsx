@@ -1,153 +1,117 @@
-import Link from "next/link";
-import Image from "next/image"
+import Link from "next/link"
+import { ArrowRight } from "lucide-react"
 
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
-import TypeBox from "@/components/typebox";
-import { badgeVariants } from "@/components/ui/badge"
+import { about, profile, education, languages } from "@/lib/profile"
 
 export const metadata = {
-    title: "關於我 About",
-    description: "認識嚴太成（Tai）——全端網頁工程師的技能、興趣與背景。熟悉 JavaScript、TypeScript、React、Next.js、MongoDB 等技術。",
-    alternates: {
-        canonical: "/about",
-    },
-};
+    title: "關於 About",
+    description:
+        "我是 Tai（-），一名軟體工程師。我做全端網頁開發，也自己發起並打造產品。我在意軟體怎麼被使用、能不能被交付與維護。",
+    alternates: { canonical: "/about" },
+}
 
-export default function About() {
-    const data = {
-        about_intro: "這是一頁我的個人介紹頁！\n若是想了解能力、背景、知識，\n請到：",
-        about_sequence: [
-            'MAKE IT REAL!',
-            1000,
-            '將想法變成現實！',
-            1000,
-        ],
-        about_accordion: [
-            {
-                acc_title: "技能",
-                acc_title_en: "Skills",
-                acc_data: [
-                    {
-                        data_title: "前端網頁設計",
-                        data_skills: ["JavaScript", "TypeScript", "React", "Next.js", "jQuery", "HTML5", "CSS3"],
-                        data_img: ["JS.png", "TS.png", "react.png", "NEXT.svg", "jQuery.png", "HTML5.png", "CSS3.png"]
-                    },
-                    {
-                        data_title: "後端網頁設計",
-                        data_skills: ["Next.js", "php"],
-                        data_img: ["NEXT.svg", "PHP.png"]
-                    },
-                    {
-                        data_title: "資料庫操作",
-                        data_skills: ["MongoDB(NO-SQL)", "phpMyAdmin(MySQL)"],
-                        data_img: ["MONGODB.png", "PHPMYADMIN.png"]
-                    },
-                    {
-                        data_title: "其他技能",
-                        data_skills: ["Git+GitHub", "CSS+tailwind"],
-                        data_img: ["git.png", "tailwind.jpg"]
-                    }
-                ]
-            },
-            {
-                acc_title: "性格",
-                acc_title_en: "Personalities",
-                acc_desc: "總是喜歡嘗試一些新鮮的事物！\n總是保持樂觀、善良！\n總是精進自己！"
-            },
-            {
-                acc_title: "興趣",
-                acc_title_en: "Interests",
-                acc_desc: "程式語言、攝影"
-            }
-        ]
+const facts = [
+    { k: "學歷", v: `${education[0].school} · ${education[0].dept}` },
+    { k: "語言", v: languages.map((l) => `${l.name}（${l.level}）`).join("、") },
+    { k: "常用", v: "TypeScript · React · Next.js · Node.js" },
+    { k: "所在", v: profile.location },
+]
 
-    }
-
+const About = () => {
     return (
-        <div className="h-screen flex justify-center items-center ">
-            <div className="grid grid-cols-1 px-10 pt-10 pb-8 flex-grow gap-10 md:grid-cols-3 h-[70vh]">
-                <aside className="relative h-full">
-                    <Image
-                        src="/images/about/jp.jpg"
-                        alt="My pic"
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 30vw"
-                        className="object-cover h-0 md:h-full hover:opacity-80 duration-300"
-                    />
-                </aside>
-                <main className="flex flex-col">
-                    <div className="relative flex-grow h-56 md:h-full hidden md:block">
-                        <Image
-                            src="/images/about/ninja.jpg"
-                            alt="My pic"
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 30vw"
-                            className="object-cover hover:opacity-80 duration-300"
-                        />
-                    </div>
-                    <h2 className="text-2xl md:text-3xl my-10 font-medium leading-relaxed tracking-wider">
-                        <TypeBox sequence={data.about_sequence} />
-                        <p className="mt-3 text-lg leading-tight whitespace-pre-line">
-                            {data.about_intro}
+        <section className="mx-auto max-w-[1240px] px-6 pt-32 md:pt-40">
+            {/* Intro */}
+            <header className="max-w-3xl">
+                <p className="label-mono">About</p>
+                <div className="mt-6 space-y-2">
+                    {about.intro.map((line, i) => (
+                        <p
+                            key={i}
+                            className="font-serif text-[1.8rem] leading-[1.3] md:text-4xl md:leading-[1.25]"
+                        >
+                            {line}
                         </p>
-                        <div className="space-x-2">
-                            {/* <Link href="/resume" className={badgeVariants({ variant: "" })}>
-                                <span className="text-sm">
-                                    個人簡歷
-                                </span>
-                            </Link> */}
-                            <Link href="/portfolio" className={badgeVariants({ variant: "" })}>
-                                <span className="text-sm">
-                                    作 品 集
-                                </span>
-                            </Link>
+                    ))}
+                </div>
+            </header>
+
+            {/* Body + facts rail */}
+            <div className="mt-16 grid grid-cols-1 gap-x-12 gap-y-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
+                {/* Body */}
+                <div className="order-2 max-w-prose space-y-10 lg:order-1">
+                    {about.body.map((block) => (
+                        <div
+                            key={block.label}
+                            className="grid grid-cols-1 gap-x-6 sm:grid-cols-[8rem_minmax(0,1fr)]"
+                        >
+                            <p className="label-mono mb-2 sm:mb-0 sm:pt-1.5">{block.label}</p>
+                            <p className="text-[1.02rem] leading-8 text-foreground/90">
+                                {block.text}
+                            </p>
                         </div>
-                    </h2>
-                </main>
-                <article className="duration-200">
-                    <Accordion type="single" collapsible defaultValue="item-1">
-                        {data.about_accordion.map((item, index) => (
-                            <AccordionItem key={index} value={`item-${index + 1}`}>
-                                <AccordionTrigger className="font-bold text-lg">{item.acc_title}</AccordionTrigger>
-                                <AccordionContent>
-                                    {item.acc_data ? (
-                                        <>
-                                            {item.acc_data.map((data, index) => (
-                                                <div key={index}>
-                                                    <h3 className="text-base font-semibold">{data.data_title}</h3>
-                                                    <div className="flex flex-wrap gap-2 py-1.5">
-                                                        {data.data_skills.map((skill, index) => (
-                                                            <div key={index} className="flex items-start gap-1.5">
-                                                                <Image
-                                                                    src={`/images/about/${data.data_img[index]}`}
-                                                                    alt={`${skill} Logo`}
-                                                                    width={20}
-                                                                    height={20}
-                                                                    className="aspect-square flex-shrink-0 bg-white"
-                                                                />
-                                                                <span>{skill}</span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </>
-                                    ) : (
-                                        <>
-                                            {item.acc_desc}
-                                        </>
-                                    )}
-                                </AccordionContent>
-                            </AccordionItem>
+                    ))}
+                </div>
+
+                {/* Facts */}
+                <aside className="order-1 lg:order-2 lg:sticky lg:top-28 lg:self-start">
+                    <dl className="space-y-4 border-l border-line pl-5">
+                        {facts.map((f) => (
+                            <div key={f.k}>
+                                <dt className="label-mono">{f.k}</dt>
+                                <dd className="mt-1 text-sm leading-6 text-foreground/90">{f.v}</dd>
+                            </div>
                         ))}
-                    </Accordion>
-                </article>
+                    </dl>
+                    <div className="mt-8 border-l border-line pl-5">
+                        <dt className="label-mono">連結</dt>
+                        <dd className="mt-2 flex flex-col gap-1.5">
+                            {profile.socials.map((s) => (
+                                <a
+                                    key={s.label}
+                                    href={s.href}
+                                    target={s.href.startsWith("http") ? "_blank" : undefined}
+                                    rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                                    className="link-editorial w-fit text-sm text-muted-foreground hover:text-foreground"
+                                >
+                                    {s.label}
+                                </a>
+                            ))}
+                        </dd>
+                    </div>
+                </aside>
             </div>
-        </div>
+
+            {/* Closing */}
+            <div className="mt-20 rule-top pt-10">
+                <p className="max-w-2xl font-serif text-2xl leading-relaxed md:text-3xl md:leading-[1.4]">
+                    想更了解我做過的東西？看看我的
+                    <Link href="/projects" className="text-signature underline-offset-4 hover:underline">
+                        作品
+                    </Link>
+                    與
+                    <Link href="/experience" className="text-signature underline-offset-4 hover:underline">
+                        經歷
+                    </Link>
+                    。
+                </p>
+                <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+                    <Link
+                        href="/contact"
+                        className="group inline-flex items-center gap-2 border-b border-foreground pb-1 text-sm font-medium hover:border-signature hover:text-signature"
+                    >
+                        聯絡我
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                    <a
+                        href={`mailto:${profile.email}`}
+                        className="font-mono text-sm text-muted-foreground hover:text-foreground"
+                    >
+                        {profile.email}
+                    </a>
+                </div>
+            </div>
+        </section>
     )
 }
+
+export default About

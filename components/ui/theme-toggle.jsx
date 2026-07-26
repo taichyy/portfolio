@@ -1,8 +1,8 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
 import { Sun, Moon } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export function ThemeToggle() {
     const { theme, setTheme } = useTheme()
@@ -23,11 +23,9 @@ export function ThemeToggle() {
             onClick={() => setTheme(isDark ? "light" : "dark")}
             aria-label={isDark ? "切換淺色主題" : "切換深色主題"}
             className="
-                w-8 h-8 rounded-full flex items-center justify-center
-                border border-slate-200 dark:border-slate-700
-                text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100
-                hover:bg-slate-100 dark:hover:bg-slate-800
-                transition-all duration-300 active:scale-90
+                flex h-8 w-8 items-center justify-center rounded-full
+                border border-line text-muted-foreground
+                transition-all duration-300 hover:bg-accent hover:text-foreground active:scale-90
             "
         >
             {isDark

@@ -1,82 +1,173 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
+    :root {
+        /* Editorial warm-paper light theme */
+        --background: 40 30% 97%;
+        --foreground: 220 16% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
- 
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
- 
-    --primary: 220.9 39.3% 11%;
-    --primary-foreground: 210 20% 98%;
- 
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
- 
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
- 
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 20% 98%;
+        --card: 40 24% 99%;
+        --card-foreground: 220 16% 12%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 224 71.4% 4.1%;
- 
-    --radius: 0.5rem;
-  }
- 
-  .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
- 
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
- 
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
- 
-    --primary: 210 20% 98%;
-    --primary-foreground: 220.9 39.3% 11%;
- 
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
- 
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
- 
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
- 
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 216 12.2% 83.9%;
-  }
+        --popover: 40 24% 99%;
+        --popover-foreground: 220 16% 12%;
+
+        --primary: 220 18% 12%;
+        --primary-foreground: 40 30% 97%;
+
+        --secondary: 38 20% 93%;
+        --secondary-foreground: 220 18% 14%;
+
+        --muted: 38 18% 93%;
+        --muted-foreground: 30 6% 42%;
+
+        --accent: 38 22% 91%;
+        --accent-foreground: 220 18% 14%;
+
+        --destructive: 0 72% 48%;
+        --destructive-foreground: 40 30% 97%;
+
+        --border: 34 14% 86%;
+        --input: 34 14% 86%;
+        --ring: 220 16% 12%;
+
+        /* Signature accent — bright yellow adjusted for contrast */
+        --signature: 48 96% 45%;
+        --signature-foreground: 40 30% 97%;
+
+        /* Editorial hairline */
+        --line: 30 12% 82%;
+
+        --radius: 0.25rem;
+    }
+
+    .dark {
+        /* Warm near-black */
+        --background: 30 8% 7%;
+        --foreground: 40 18% 91%;
+
+        --card: 30 7% 10%;
+        --card-foreground: 40 18% 91%;
+
+        --popover: 30 7% 10%;
+        --popover-foreground: 40 18% 91%;
+
+        --primary: 40 18% 91%;
+        --primary-foreground: 30 8% 7%;
+
+        --secondary: 30 6% 15%;
+        --secondary-foreground: 40 18% 91%;
+
+        --muted: 30 6% 15%;
+        --muted-foreground: 36 8% 60%;
+
+        --accent: 30 6% 16%;
+        --accent-foreground: 40 18% 91%;
+
+        --destructive: 0 62% 42%;
+        --destructive-foreground: 40 18% 91%;
+
+        --border: 34 8% 19%;
+        --input: 34 8% 19%;
+        --ring: 40 18% 80%;
+
+        --signature: 60 100% 70%;
+        --signature-foreground: 30 8% 7%;
+
+        --line: 34 8% 22%;
+    }
 }
- 
+
 @layer base {
-  * {
-    @apply border-border;
-  }
-  html {
-    color-scheme: light;
-  }
-  html.dark {
-    color-scheme: dark;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+    * {
+        @apply border-border;
+    }
+    html {
+        color-scheme: light;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        scroll-behavior: smooth;
+    }
+    html.dark {
+        color-scheme: dark;
+    }
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "kern", "liga", "calt";
+    }
+
+    /* Editorial rhythm helpers */
+    ::selection {
+        background: hsl(var(--signature) / 0.9);
+        color: hsl(var(--signature-foreground));
+    }
+}
+
+@layer components {
+    /* Small mono metadata label */
+    .label-mono {
+        @apply font-mono text-[0.68rem] uppercase tracking-[0.18em] text-muted-foreground;
+    }
+
+    /* Underline that grows from the left on hover — editorial link */
+    .link-editorial {
+        @apply relative inline-block;
+    }
+    .link-editorial::after {
+        content: "";
+        @apply absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-300 ease-out;
+    }
+    .link-editorial:hover::after {
+        @apply scale-x-100;
+    }
+
+    /* Thin top rule used to open a section */
+    .rule-top {
+        @apply border-t border-[hsl(var(--line))];
+    }
+
+    /* Scroll-triggered fade-in animations */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .animate-on-scroll.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Staggered children animation */
+    .stagger-children > * {
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .stagger-children.is-visible > *:nth-child(1) { transition-delay: 0ms; }
+    .stagger-children.is-visible > *:nth-child(2) { transition-delay: 60ms; }
+    .stagger-children.is-visible > *:nth-child(3) { transition-delay: 120ms; }
+    .stagger-children.is-visible > *:nth-child(4) { transition-delay: 180ms; }
+    .stagger-children.is-visible > *:nth-child(5) { transition-delay: 240ms; }
+    .stagger-children.is-visible > *:nth-child(6) { transition-delay: 300ms; }
+
+    .stagger-children.is-visible > * {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Hover lift effect for cards/rows */
+    .hover-lift {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+    }
 }
