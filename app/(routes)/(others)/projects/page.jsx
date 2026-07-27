@@ -4,7 +4,7 @@ import { projectsByCategory } from "@/lib/data"
 export const metadata = {
     title: "作品 Projects",
     description:
-        "Tai Y 的軟體工程作品：商業化 ERP 系統、自己發起的產品、Zero-Knowledge 開源密碼管理器與各種工具。依專業工作、自有產品、開源與個人專案分類。",
+        "Tai Y 的軟體工程作品：商業化 ERP 系統、自己發起的產品、Zero-Knowledge 開源密碼管理器與各種工具。依實務作品、自有產品、開源與個人專案分類。",
     alternates: { canonical: "/projects" },
 }
 

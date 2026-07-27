@@ -18,6 +18,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 // Case-study sections, in order. Rendered only when the field exists.
 const caseOrder = [
+    { key: "background", en: "BACKGROUND", zh: "什麼是一番賞？" },
     { key: "overview", en: "OVERVIEW", zh: "專案概述" },
     { key: "context", en: "CONTEXT", zh: "為什麼需要它" },
     { key: "contribution", en: "MY ROLE", zh: "我負責的部分" },
@@ -92,12 +93,12 @@ const DeepDiveBlock = (props) => {
 const CaseSection = (props) => {
     const { index, en, zh, children } = props;
     return (
-        <section className="grid grid-cols-1 gap-x-8 sm:grid-cols-[9rem_minmax(0,1fr)]">
+        <section className="grid grid-cols-1 gap-x-10 sm:grid-cols-[10rem_minmax(0,1fr)]">
             <div className="mb-3 flex items-center gap-3 sm:mb-0 sm:flex-col sm:items-start sm:gap-1">
                 <span className="font-mono text-xs text-signature tabular-nums">
                     {String(index).padStart(2, "0")}
                 </span>
-                <span className="label-mono whitespace-nowrap">{en}</span>
+                <span className="label-mono sm:leading-relaxed">{en}</span>
             </div>
             <div>
                 <h2 className="font-serif text-2xl">{zh}</h2>
@@ -212,13 +213,13 @@ const ProjectDetail = (props) => {
                                     {liveLink && (
                                         <a href={liveLink} target="_blank" rel="noopener noreferrer"
                                             className="link-editorial w-fit text-foreground hover:text-signature">
-                                            Live site
+                                            線上連結
                                         </a>
                                     )}
                                     {repoLink && (
                                         <a href={repoLink} target="_blank" rel="noopener noreferrer"
                                             className="link-editorial w-fit text-foreground hover:text-signature">
-                                            Source code
+                                            Github
                                         </a>
                                     )}
                                 </dd>
