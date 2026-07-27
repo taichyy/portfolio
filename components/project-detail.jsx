@@ -14,11 +14,12 @@ import {
 } from "@/components/ui/carousel"
 import { cn } from "@/lib/utils"
 import { categoryMeta } from "@/lib/data"
+import Lightbox from "@/components/lightbox"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 // Case-study sections, in order. Rendered only when the field exists.
 const caseOrder = [
-    { key: "background", en: "BACKGROUND", zh: "什麼是一番賞？" },
+    { key: "background", en: "BACKGROUND", zh: "背景" },
     { key: "overview", en: "OVERVIEW", zh: "專案概述" },
     { key: "context", en: "CONTEXT", zh: "為什麼需要它" },
     { key: "contribution", en: "MY ROLE", zh: "我負責的部分" },
@@ -61,13 +62,20 @@ const DeepDiveBlock = (props) => {
     if (block.type === "img" && block.src) {
         return (
             <figure className="mt-6">
-                <Image
-                    src={block.src}
-                    alt={block.alt || "Image"}
-                    width={1000}
-                    height={700}
-                    className="w-full rounded border border-line"
-                />
+                <button
+                    type="button"
+                    onClick={() => props.onImageClick?.([{ src: block.src, alt: block.alt || block.caption || "Image" }], 0)}
+                    className="block w-full cursor-zoom-in overflow-hidden rounded border border-line transition-opacity hover:opacity-90"
+                    aria-label="放大檢視圖片"
+                >
+                    <Image
+                        src={block.src}
+                        alt={block.alt || "Image"}
+                        width={1000}
+                        height={700}
+                        className="w-full"
+                    />
+                </button>
                 {block.caption && (
                     <figcaption className="mt-2 text-right font-mono text-xs text-muted-foreground">
                         {block.caption}
@@ -122,7 +130,11 @@ const ProjectDetail = (props) => {
     const blocks = []
     caseOrder.forEach((s) => {
         if (s.key === "result" && hasDecisions) blocks.push({ type: "decisions" })
-        if (project[s.key]) blocks.push({ type: "text", ...s })
+        if (project[s.key]) {
+            // Let a project give its background section a custom heading.
+            const zh = s.key === "background" && project.bgHeading ? project.bgHeading : s.zh
+            blocks.push({ type: "text", ...s, zh })
+        }
     })
     if (hasDecisions && !blocks.some((b) => b.type === "decisions")) {
         blocks.push({ type: "decisions" })
@@ -131,6 +143,17 @@ const ProjectDetail = (props) => {
     const [carouselApi, setCarouselApi] = useState(null)
     const [current, setCurrent] = useState(1)
     const total = project.img?.length || 0
+    const galleryImages = (project.img || []).map((src, i) => ({
+        src,
+        alt: `${project.title} — ${i + 1}`,
+    }))
+
+    // Lightbox (enlarged image view)
+    const [lightbox, setLightbox] = useState({ open: false, images: [], index: 0 })
+    const openLightbox = (images, index) =>
+        setLightbox({ open: true, images, index })
+    const setLightboxOpen = (open) =>
+        setLightbox((s) => ({ ...s, open }))
 
     useEffect(() => {
         if (!carouselApi) return
@@ -231,44 +254,64 @@ const ProjectDetail = (props) => {
                 {/* Main column */}
                 <div className="min-w-0">
                     {/* Gallery */}
-                    {total > 0 && (
+                    {total === 1 && (
                         <div className="mb-14">
-                            <Carousel className="w-full" opts={{ loop: total > 1 }} setApi={setCarouselApi}>
+                            <button
+                                type="button"
+                                onClick={() => openLightbox(galleryImages, 0)}
+                                className="block w-full cursor-zoom-in overflow-hidden rounded border border-line transition-opacity hover:opacity-90"
+                                aria-label="放大檢視圖片"
+                            >
+                                <Image
+                                    src={project.img[0]}
+                                    alt={galleryImages[0].alt}
+                                    width={1920}
+                                    height={1080}
+                                    className="aspect-video w-full object-cover"
+                                />
+                            </button>
+                        </div>
+                    )}
+
+                    {total > 1 && (
+                        <div className="mb-14">
+                            <Carousel className="w-full" opts={{ loop: true }} setApi={setCarouselApi}>
                                 <CarouselContent>
                                     {project.img.map((src, i) => (
                                         <CarouselItem key={i}>
-                                            <Image
-                                                src={src}
-                                                alt={`${project.title} — ${i + 1}`}
-                                                width={1920}
-                                                height={1080}
-                                                className="aspect-video w-full rounded border border-line object-cover"
-                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => openLightbox(galleryImages, i)}
+                                                className="block w-full cursor-zoom-in overflow-hidden rounded border border-line transition-opacity hover:opacity-90"
+                                                aria-label={`放大檢視第 ${i + 1} 張`}
+                                            >
+                                                <Image
+                                                    src={src}
+                                                    alt={galleryImages[i].alt}
+                                                    width={1920}
+                                                    height={1080}
+                                                    className="aspect-video w-full object-cover"
+                                                />
+                                            </button>
                                         </CarouselItem>
                                     ))}
                                 </CarouselContent>
-                                {total > 1 && (
-                                    <>
-                                        <CarouselPrevious className="left-3 bg-background/80 backdrop-blur-sm" />
-                                        <CarouselNext className="right-3 bg-background/80 backdrop-blur-sm" />
-                                    </>
-                                )}
+                                <CarouselPrevious className="left-3 bg-background/80 backdrop-blur-sm" />
+                                <CarouselNext className="right-3 bg-background/80 backdrop-blur-sm" />
                             </Carousel>
-                            {total > 1 && (
-                                <div className="mt-3 flex justify-center gap-1.5">
-                                    {project.img.map((_, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => carouselApi?.scrollTo(i)}
-                                            aria-label={`第 ${i + 1} 張`}
-                                            className={cn(
-                                                "h-1.5 rounded-full transition-all duration-300",
-                                                current === i + 1 ? "w-4 bg-signature" : "w-1.5 bg-muted-foreground/30",
-                                            )}
-                                        />
-                                    ))}
-                                </div>
-                            )}
+                            <div className="mt-3 flex justify-center gap-1.5">
+                                {project.img.map((_, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => carouselApi?.scrollTo(i)}
+                                        aria-label={`第 ${i + 1} 張`}
+                                        className={cn(
+                                            "h-1.5 rounded-full transition-all duration-300",
+                                            current === i + 1 ? "w-4 bg-signature" : "w-1.5 bg-muted-foreground/30",
+                                        )}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     )}
 
@@ -310,7 +353,7 @@ const ProjectDetail = (props) => {
                                             <h3 className="font-serif text-xl">{section.title}</h3>
                                         )}
                                         {section.content?.map((block, bi) => (
-                                            <DeepDiveBlock key={bi} block={block} />
+                                            <DeepDiveBlock key={bi} block={block} onImageClick={openLightbox} />
                                         ))}
                                     </section>
                                 ))}
@@ -330,6 +373,14 @@ const ProjectDetail = (props) => {
                     </div>
                 </div>
             </div>
+
+            <Lightbox
+                open={lightbox.open}
+                onOpenChange={setLightboxOpen}
+                images={lightbox.images}
+                startIndex={lightbox.index}
+                title={project.title}
+            />
         </article>
     )
 }
