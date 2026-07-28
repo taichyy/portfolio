@@ -12,12 +12,14 @@ import {
     CarouselPrevious,
     CarouselNext,
 } from "@/components/ui/carousel"
+import { useI18n } from "@/components/providers/i18n-provider"
 
 // Full-screen image viewer.
 // - Multiple images → a swipeable carousel that opens at `startIndex`.
 // - A single image → just the image, no carousel controls.
 const Lightbox = (props) => {
     const { open, onOpenChange, images = [], startIndex = 0, title = "" } = props;
+    const { dict } = useI18n()
     const multiple = images.length > 1
 
     const [api, setApi] = useState(null)
@@ -55,7 +57,7 @@ const Lightbox = (props) => {
                     onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                     <DialogPrimitive.Title className="sr-only">
-                        {title || "圖片檢視"}
+                        {title || dict.lightbox.title}
                     </DialogPrimitive.Title>
 
                     {/* Top bar */}
@@ -65,7 +67,7 @@ const Lightbox = (props) => {
                         </span>
                         <DialogPrimitive.Close
                             className="rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
-                            aria-label="關閉"
+                            aria-label={dict.lightbox.close}
                         >
                             <X className="h-5 w-5" />
                         </DialogPrimitive.Close>
@@ -86,7 +88,7 @@ const Lightbox = (props) => {
                                             <div className="relative h-[78vh] w-full">
                                                 <Image
                                                     src={img.src}
-                                                    alt={img.alt || `圖片 ${i + 1}`}
+                                                    alt={img.alt || dict.lightbox.image(i + 1)}
                                                     fill
                                                     quality={90}
                                                     sizes="100vw"
@@ -103,7 +105,7 @@ const Lightbox = (props) => {
                             <div className="relative h-[78vh] w-full px-6">
                                 <Image
                                     src={images[0].src}
-                                    alt={images[0].alt || title || "圖片"}
+                                    alt={images[0].alt || title || dict.lightbox.image(1)}
                                     fill
                                     quality={90}
                                     sizes="100vw"

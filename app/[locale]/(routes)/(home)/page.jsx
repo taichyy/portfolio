@@ -4,15 +4,22 @@ import Link from "next/link"
 import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
 
-import { featuredProjects } from "@/lib/data"
 import ProjectRow from "@/components/project-row"
 import SiteFooter from "@/components/site-footer"
 import ScrollReveal from "@/components/scroll-reveal"
-import { profile, experience, techProfile } from "@/lib/profile"
+import { getFeaturedProjects } from "@/lib/data"
+import { useI18n } from "@/components/providers/i18n-provider"
+import { getProfile, getExperience, getTechProfile } from "@/lib/profile"
 
 export default function HomePage() {
+    const { locale, dict, href } = useI18n()
     const [showScrollButton, setShowScrollButton] = useState(true)
     const nextSectionRef = useRef(null)
+
+    const profile = getProfile(locale)
+    const experience = getExperience(locale)
+    const techProfile = getTechProfile(locale)
+    const featuredProjects = getFeaturedProjects(locale)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -49,10 +56,10 @@ export default function HomePage() {
 
                     <div className="mt-6 flex flex-col gap-1 animate-fade-up [animation-delay:120ms]">
                         <p className="font-mono text-sm uppercase tracking-[0.18em]">
-                            Software Engineer
+                            {dict.home.role}
                         </p>
                         <p className="font-mono text-sm text-muted-foreground">
-                            Currently — {profile.currentRole}
+                            {dict.home.currently} — {profile.currentRole}
                         </p>
                     </div>
 
@@ -62,17 +69,17 @@ export default function HomePage() {
 
                     <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 animate-fade-up [animation-delay:240ms]">
                         <Link
-                            href="/experience"
+                            href={href("/experience")}
                             className="group inline-flex items-center gap-2 border-b border-foreground pb-1 text-sm font-medium transition-colors hover:border-signature hover:text-signature"
                         >
-                            查看經歷
+                            {dict.home.viewExperience}
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                         </Link>
                         <Link
-                            href="/projects"
+                            href={href("/projects")}
                             className="group inline-flex items-center gap-2 border-b border-transparent pb-1 text-sm font-medium text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
                         >
-                            查看作品
+                            {dict.home.viewProjects}
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                         </Link>
                         <a
@@ -90,9 +97,9 @@ export default function HomePage() {
                     className={`absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground transition-all duration-500 hover:text-foreground ${
                         showScrollButton ? "opacity-100" : "opacity-0 pointer-events-none"
                     }`}
-                    aria-label="往下捲動"
+                    aria-label={dict.home.scrollDownAria}
                 >
-                    <span className="label-mono">往下</span>
+                    <span className="label-mono">{dict.home.scrollDown}</span>
                     <ChevronDown className="h-5 w-5 animate-bounce" />
                 </button>
             </section>
@@ -101,7 +108,9 @@ export default function HomePage() {
             <ScrollReveal>
                 <section ref={nextSectionRef} className="mx-auto max-w-[1240px] px-6">
                     <div className="rule-top grid grid-cols-1 gap-x-12 gap-y-6 pt-10 lg:grid-cols-[16rem_minmax(0,1fr)]">
-                        <h2 className="font-mono text-sm uppercase tracking-[0.2em]">Profile</h2>
+                        <h2 className="font-mono text-sm uppercase tracking-[0.2em]">
+                            {dict.home.profile}
+                        </h2>
                         <div className="max-w-prose space-y-5">
                             {profile.summary.map((p, i) => (
                                 <p key={i} className="text-[1.05rem] leading-8 text-foreground/90">
@@ -118,12 +127,14 @@ export default function HomePage() {
                 <ScrollReveal delay={100}>
                     <section className="mx-auto mt-24 max-w-[1240px] px-6">
                         <div className="mb-6 flex items-baseline justify-between">
-                            <h2 className="font-mono text-sm uppercase tracking-[0.2em]">Selected Work</h2>
+                            <h2 className="font-mono text-sm uppercase tracking-[0.2em]">
+                                {dict.home.selectedWork}
+                            </h2>
                             <Link
-                                href="/projects"
+                                href={href("/projects")}
                                 className="group inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
                             >
-                                全部作品
+                                {dict.home.allProjects}
                                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                             </Link>
                         </div>
@@ -141,12 +152,14 @@ export default function HomePage() {
             <ScrollReveal delay={150} stagger>
                 <section className="mx-auto mt-24 max-w-[1240px] px-6">
                     <div className="mb-6 flex items-baseline justify-between">
-                        <h2 className="font-mono text-sm uppercase tracking-[0.2em]">Experience</h2>
+                        <h2 className="font-mono text-sm uppercase tracking-[0.2em]">
+                            {dict.home.experience}
+                        </h2>
                         <Link
-                            href="/experience"
+                            href={href("/experience")}
                             className="group inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
                         >
-                            完整經歷
+                            {dict.home.fullExperience}
                             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                         </Link>
                     </div>
@@ -174,15 +187,12 @@ export default function HomePage() {
             <ScrollReveal delay={100} stagger>
                 <section className="mx-auto mt-24 max-w-[1240px] px-6">
                     <h2 className="mb-8 font-mono text-sm uppercase tracking-[0.2em]">
-                        Technical Profile
+                        {dict.home.techProfile}
                     </h2>
                     <dl className="grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2">
                         {techProfile.map((group) => (
-                            <div key={group.group} className="border-t border-line pt-5 transition-colors hover:bg-muted/20">
-                                <dt className="flex items-baseline gap-3">
-                                    <span className="font-serif text-lg">{group.group}</span>
-                                    <span className="label-mono">{group.en}</span>
-                                </dt>
+                            <div key={group.id} className="border-t border-line pt-5 transition-colors hover:bg-muted/20">
+                                <dt className="font-serif text-lg">{group.label}</dt>
                                 <dd className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
                                     {group.items.map((item) => (
                                         <span key={item} className="text-[0.95rem] text-foreground/90">
@@ -200,7 +210,7 @@ export default function HomePage() {
             <ScrollReveal delay={100}>
                 <section className="mx-auto mt-24 max-w-[1240px] px-6">
                     <div className="rule-top pt-12">
-                        <p className="label-mono">Contact</p>
+                        <p className="label-mono">{dict.home.contact}</p>
                         <p className="mt-5 max-w-2xl font-serif text-3xl leading-tight md:text-4xl">
                             {profile.contact.heading}
                         </p>

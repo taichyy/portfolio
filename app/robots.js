@@ -1,4 +1,4 @@
-const SITE_URL = "https://www.heytai.dev";
+import { SITE_URL } from "@/lib/i18n/seo";
 
 export default function robots() {
     return {

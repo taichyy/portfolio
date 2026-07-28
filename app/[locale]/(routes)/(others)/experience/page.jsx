@@ -1,25 +1,41 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 
-import { experience, education, languages, techProfile } from "@/lib/profile"
+import { localeHref } from "@/lib/i18n/routing"
+import { localeAlternates } from "@/lib/i18n/seo"
+import { resolveLocale } from "@/lib/i18n/config"
+import { getDictionary } from "@/lib/i18n/dictionaries"
+import { getExperience, getEducation, getLanguages, getTechProfile } from "@/lib/profile"
 
-export const metadata = {
-    title: "經歷 Experience",
-    description:
-        "Tai Y 的專業經歷：曾獨立負責商業化 ERP 系統前端架構，並開發自動化生產工具與會員系統。國立高雄科技大學資訊管理系。",
-    alternates: { canonical: "/experience" },
+export async function generateMetadata(props) {
+    const locale = resolveLocale((await props.params).locale)
+    const dict = getDictionary(locale)
+
+    return {
+        title: dict.meta.experience.title,
+        description: dict.meta.experience.description,
+        alternates: localeAlternates(locale, "/experience"),
+    }
 }
 
-const Experience = () => {
+const Experience = async (props) => {
+    const locale = resolveLocale((await props.params).locale)
+    const dict = getDictionary(locale)
+
+    const experience = getExperience(locale)
+    const education = getEducation(locale)
+    const languages = getLanguages(locale)
+    const techProfile = getTechProfile(locale)
+
     return (
         <section className="mx-auto max-w-[1240px] px-6 pt-32 md:pt-40">
             <header className="max-w-2xl">
-                <p className="label-mono">Experience</p>
+                <p className="label-mono">{dict.experience.eyebrow}</p>
                 <h1 className="mt-5 font-serif text-4xl leading-[1.1] md:text-6xl">
-                    專業經歷
+                    {dict.experience.heading}
                 </h1>
                 <p className="mt-6 text-base leading-8 text-muted-foreground md:text-lg">
-                    我做過的專業工作，以及我在每段經歷中實際負責的部分。
+                    {dict.experience.intro}
                 </p>
             </header>
 
@@ -37,7 +53,7 @@ const Experience = () => {
                                 </span>
                                 {job.current && (
                                     <span className="rounded-full border border-signature/40 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-signature">
-                                        現職
+                                        {dict.experience.current}
                                     </span>
                                 )}
                             </div>
@@ -74,10 +90,10 @@ const Experience = () => {
                                 )}
                                 {job.projectSlug && (
                                     <Link
-                                        href={`/projects/${job.projectSlug}`}
+                                        href={localeHref(locale, `/projects/${job.projectSlug}`)}
                                         className="group inline-flex items-center gap-1.5 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-foreground hover:text-signature"
                                     >
-                                        相關作品
+                                        {dict.experience.relatedProject}
                                         <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                                     </Link>
                                 )}
@@ -91,7 +107,9 @@ const Experience = () => {
             {/* Education + languages + tech */}
             <div className="mt-20 grid grid-cols-1 gap-x-12 gap-y-14 lg:grid-cols-2">
                 <div>
-                    <h2 className="mb-6 font-mono text-sm uppercase tracking-[0.2em]">Education</h2>
+                    <h2 className="mb-6 font-mono text-sm uppercase tracking-[0.2em]">
+                        {dict.experience.education}
+                    </h2>
                     {education.map((edu) => (
                         <div key={edu.school} className="border-t border-line pt-5">
                             <p className="font-serif text-xl">{edu.school}</p>
@@ -99,7 +117,9 @@ const Experience = () => {
                             <p className="mt-1 font-mono text-xs text-muted-foreground/70">{edu.period}</p>
                         </div>
                     ))}
-                    <h2 className="mb-6 mt-12 font-mono text-sm uppercase tracking-[0.2em]">Languages</h2>
+                    <h2 className="mb-6 mt-12 font-mono text-sm uppercase tracking-[0.2em]">
+                        {dict.experience.languages}
+                    </h2>
                     <div className="space-y-2 border-t border-line pt-5">
                         {languages.map((lang) => (
                             <div key={lang.name} className="flex items-baseline justify-between">
@@ -112,15 +132,12 @@ const Experience = () => {
 
                 <div>
                     <h2 className="mb-6 font-mono text-sm uppercase tracking-[0.2em]">
-                        Technical Profile
+                        {dict.experience.techProfile}
                     </h2>
                     <dl className="space-y-6">
                         {techProfile.map((group) => (
-                            <div key={group.group} className="border-t border-line pt-5">
-                                <dt className="flex items-baseline gap-3">
-                                    <span className="font-serif text-lg">{group.group}</span>
-                                    <span className="label-mono">{group.en}</span>
-                                </dt>
+                            <div key={group.id} className="border-t border-line pt-5">
+                                <dt className="font-serif text-lg">{group.label}</dt>
                                 <dd className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1.5">
                                     {group.items.map((item) => (
                                         <span key={item} className="text-[0.95rem] text-foreground/90">

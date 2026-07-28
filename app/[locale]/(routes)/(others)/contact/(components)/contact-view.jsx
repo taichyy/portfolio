@@ -5,11 +5,15 @@ import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { ArrowUpRight } from "lucide-react"
 
-import { profile } from "@/lib/profile"
+import { getProfile } from "@/lib/profile"
+import { useI18n } from "@/components/providers/i18n-provider"
 
-const Contact = () => {
+const ContactView = () => {
+    const { locale, dict } = useI18n()
     const { resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
+
+    const profile = getProfile(locale)
 
     useEffect(() => {
         setMounted(true)
@@ -30,7 +34,7 @@ const Contact = () => {
                 </div>
             )}
 
-            <p className="label-mono">Contact</p>
+            <p className="label-mono">{dict.contact.eyebrow}</p>
             <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.15] md:text-6xl">
                 {profile.contact.heading}
             </h1>
@@ -44,7 +48,7 @@ const Contact = () => {
                     className="group flex items-center justify-between py-5"
                 >
                     <span>
-                        <span className="label-mono block">Email</span>
+                        <span className="label-mono block">{dict.contact.email}</span>
                         <span className="mt-1 block font-mono text-lg transition-colors group-hover:text-signature">
                             {profile.contact.email}
                         </span>
@@ -76,4 +80,4 @@ const Contact = () => {
     )
 }
 
-export default Contact
+export default ContactView

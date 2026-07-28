@@ -1,23 +1,19 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
-import { profile } from "@/lib/profile"
-
-const nav = [
-    { href: "/experience", label: "Experience" },
-    { href: "/projects", label: "Projects" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-]
+import { getProfile } from "@/lib/profile"
+import { useI18n } from "@/components/providers/i18n-provider"
 
 const SiteFooter = () => {
     const year = new Date().getFullYear()
+    const { locale, dict } = useI18n()
     const { resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
+
+    const profile = getProfile(locale)
 
     useEffect(() => {
         setMounted(true)
@@ -40,7 +36,7 @@ const SiteFooter = () => {
                                 </div>
                             )}
                             <p className="font-serif text-2xl leading-snug">
-                                Tai — 軟體工程師
+                                {dict.footer.tagline}
                             </p>
                         </div>
                         <a
@@ -51,18 +47,7 @@ const SiteFooter = () => {
                         </a>
                     </div>
 
-                    <div className="flex flex-col gap-6 md:items-end">
-                        <nav className="flex flex-wrap gap-x-6 gap-y-2">
-                            {nav.map((item) => (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
-                                >
-                                    {item.label}
-                                </Link>
-                            ))}
-                        </nav>
+                    <div className="flex md:items-end">
                         <div className="flex gap-4">
                             {profile.socials.map((s) => (
                                 <a

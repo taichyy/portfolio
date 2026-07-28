@@ -4,7 +4,10 @@ import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
 import { useEffect, useState } from "react"
 
+import { useI18n } from "@/components/providers/i18n-provider"
+
 export function ThemeToggle() {
+    const { dict } = useI18n()
     const { theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
@@ -21,7 +24,7 @@ export function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(isDark ? "light" : "dark")}
-            aria-label={isDark ? "切換淺色主題" : "切換深色主題"}
+            aria-label={isDark ? dict.nav.toLight : dict.nav.toDark}
             className="
                 flex h-8 w-8 items-center justify-center rounded-full
                 border border-line text-muted-foreground

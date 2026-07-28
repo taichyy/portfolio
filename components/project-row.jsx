@@ -1,17 +1,20 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 
 import { projectHref } from "@/lib/data"
+import { useI18n } from "@/components/providers/i18n-provider"
 
 // Editorial index row — the repeated unit across Projects & the homepage.
 // No card grid, no status dashboard: type, a factual line, and metadata.
 const ProjectRow = (props) => {
     const { project, index } = props;
-    const href = projectHref(project);
+    const { dict, href } = useI18n();
 
     return (
         <Link
-            href={href}
+            href={href(projectHref(project))}
             className="group relative block border-t border-line py-6 transition-all duration-300 hover:bg-accent/40 hover:px-3 hover:-mx-3"
         >
             <div className="flex items-start gap-4 md:gap-8">
@@ -43,7 +46,7 @@ const ProjectRow = (props) => {
                             </span>
                         )}
                         {project.openSource && (
-                            <span className="label-mono text-signature">Open Source</span>
+                            <span className="label-mono text-signature">{dict.project.openSource}</span>
                         )}
                     </div>
                 </div>
