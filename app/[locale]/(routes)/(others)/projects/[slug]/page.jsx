@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation"
 
 import { LOCALES, resolveLocale } from "@/lib/i18n/config"
-import ProjectDetail from "@/components/project-detail"
 import { localeAlternates } from "@/lib/i18n/seo"
 import { getDictionary } from "@/lib/i18n/dictionaries"
 import { getProject, getCategoryMeta, projectSlugs } from "@/lib/data"
+import ProjectDetail from "./(components)/project-detail"
 
 export function generateStaticParams() {
     return LOCALES.flatMap((locale) => projectSlugs.map(({ slug }) => ({ locale, slug })))
@@ -55,7 +55,13 @@ const ProjectDetailPage = async (props) => {
         notFound()
     }
 
-    return <ProjectDetail project={project} />
+    return (
+        <ProjectDetail
+            project={project}
+            locale={locale}
+            categoryLabel={getCategoryMeta(locale)[project.category]?.label}
+        />
+    )
 }
 
 export default ProjectDetailPage

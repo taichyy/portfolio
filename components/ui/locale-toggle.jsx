@@ -6,14 +6,8 @@ import { stripLocale, localeHref } from "@/lib/i18n/routing"
 import { useI18n } from "@/components/providers/i18n-provider"
 import { LOCALES, LOCALE_META, LOCALE_COOKIE } from "@/lib/i18n/config"
 
-// Swaps the locale segment of the current URL and remembers the choice, so
-// the proxy sends the visitor straight to their language next time.
-//
-// A plain <a>, not <Link>, on purpose: switching locale changes the [locale]
-// segment, so a client transition would re-render the root layout on the
-// client — which re-creates its JSON-LD <script> (React warns about that) and
-// leaves the <html lang> attribute stale. A document load renders the whole
-// page fresh in the new language.
+// A plain <a>, not <Link>: a client transition across [locale] would leave
+// <html lang> stale and re-create the layout's JSON-LD script.
 export const LocaleToggle = () => {
     const pathname = usePathname()
     const { locale, dict } = useI18n()

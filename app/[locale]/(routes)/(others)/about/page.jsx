@@ -5,6 +5,7 @@ import { localeHref } from "@/lib/i18n/routing"
 import { resolveLocale } from "@/lib/i18n/config"
 import { localeAlternates } from "@/lib/i18n/seo"
 import { getDictionary } from "@/lib/i18n/dictionaries"
+import { Marked, SectionLabel } from "@/components/editorial"
 import { getAbout, getProfile, getEducation, getLanguages } from "@/lib/profile"
 
 export async function generateMetadata(props) {
@@ -37,104 +38,85 @@ const About = async (props) => {
                 )
                 .join(locale === "en" ? ", " : "、"),
         },
-        { k: dict.about.facts.stack, v: "TypeScript · React · Next.js · Node.js" },
+        { k: dict.about.facts.stack, v: profile.focus },
         { k: dict.about.facts.location, v: profile.location },
     ]
 
     return (
-        <section className="mx-auto max-w-[1240px] px-6 pt-32 md:pt-40">
-            {/* Intro */}
-            <header className="max-w-3xl">
+        <section className="mx-auto max-w-[1240px] px-6 pt-32 md:px-10 md:pt-44">
+            <header className="max-w-4xl">
                 <p className="label-mono">{dict.about.eyebrow}</p>
-                <div className="mt-6 space-y-2">
+                <h1 className="font-display mt-6 text-[2.4rem] font-extrabold leading-[1.1] md:text-[3.6rem]">
                     {about.intro.map((line, i) => (
-                        <p
-                            key={i}
-                            className="font-serif text-[1.8rem] leading-[1.3] md:text-4xl md:leading-[1.25]"
-                        >
-                            {line}
-                        </p>
+                        <span key={i} className="block">
+                            <Marked text={line} />
+                        </span>
                     ))}
-                </div>
+                </h1>
             </header>
 
-            {/* Body + facts rail */}
-            <div className="mt-16 grid grid-cols-1 gap-x-12 gap-y-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
-                {/* Body */}
-                <div className="order-2 max-w-prose space-y-10 lg:order-1">
+            <div className="mt-20 grid grid-cols-1 gap-x-12 gap-y-14 md:mt-28 lg:grid-cols-12">
+                <div className="order-2 space-y-12 lg:order-1 lg:col-span-7">
                     {about.body.map((block) => (
-                        <div
-                            key={block.label}
-                            className="grid grid-cols-1 gap-x-6 sm:grid-cols-[8rem_minmax(0,1fr)]"
-                        >
-                            <p className="label-mono mb-2 sm:mb-0 sm:pt-1.5">{block.label}</p>
-                            <p className="text-[1.02rem] leading-8 text-foreground/90">
+                        <div key={block.label} className="border-t border-foreground pt-5">
+                            <h2 className="font-display text-xl font-bold">{block.label}</h2>
+                            <p className="mt-3 text-[1.02rem] leading-[1.9] text-foreground/90">
                                 {block.text}
                             </p>
                         </div>
                     ))}
                 </div>
 
-                {/* Facts */}
-                <aside className="order-1 lg:order-2 lg:sticky lg:top-28 lg:self-start">
-                    <dl className="space-y-4 border-l border-line pl-5">
+                <aside className="order-1 lg:order-2 lg:col-span-4 lg:col-start-9 lg:sticky lg:top-24 lg:self-start">
+                    <dl className="border-t border-foreground">
                         {facts.map((f) => (
-                            <div key={f.k}>
+                            <div key={f.k} className="border-b border-line py-3.5">
                                 <dt className="label-mono">{f.k}</dt>
-                                <dd className="mt-1 text-sm leading-6 text-foreground/90">{f.v}</dd>
+                                <dd className="mt-1.5 text-[0.95rem] leading-relaxed">{f.v}</dd>
                             </div>
                         ))}
+                        <div className="border-b border-line py-3.5">
+                            <dt className="label-mono">{dict.about.facts.links}</dt>
+                            <dd className="mt-1.5 flex flex-wrap gap-x-5 gap-y-1.5 text-[0.95rem]">
+                                {profile.socials.map((s) => (
+                                    <a
+                                        key={s.label}
+                                        href={s.href}
+                                        target={s.href.startsWith("http") ? "_blank" : undefined}
+                                        rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                                        className="link-mark"
+                                    >
+                                        {s.label}
+                                    </a>
+                                ))}
+                            </dd>
+                        </div>
                     </dl>
-                    <div className="mt-8 border-l border-line pl-5">
-                        <dt className="label-mono">{dict.about.facts.links}</dt>
-                        <dd className="mt-2 flex flex-col gap-1.5">
-                            {profile.socials.map((s) => (
-                                <a
-                                    key={s.label}
-                                    href={s.href}
-                                    target={s.href.startsWith("http") ? "_blank" : undefined}
-                                    rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                                    className="link-editorial w-fit text-sm text-muted-foreground hover:text-foreground"
-                                >
-                                    {s.label}
-                                </a>
-                            ))}
-                        </dd>
-                    </div>
                 </aside>
             </div>
 
-            {/* Closing */}
-            <div className="mt-20 rule-top pt-10">
-                <p className="max-w-2xl font-serif text-2xl leading-relaxed md:text-3xl md:leading-[1.4]">
+            <div className="mt-24 border-t border-foreground pt-10 md:mt-32">
+                <SectionLabel as="p">{dict.about.contactCta}</SectionLabel>
+                <p className="font-display mt-8 max-w-3xl text-2xl font-bold leading-[1.45] md:text-[2.1rem]">
                     {dict.about.closing.lead}
-                    <Link
-                        href={localeHref(locale, "/projects")}
-                        className="text-signature underline-offset-4 hover:underline"
-                    >
+                    <Link href={localeHref(locale, "/projects")} className="link-mark">
                         {dict.about.closing.projects}
                     </Link>
                     {dict.about.closing.and}
-                    <Link
-                        href={localeHref(locale, "/experience")}
-                        className="text-signature underline-offset-4 hover:underline"
-                    >
+                    <Link href={localeHref(locale, "/experience")} className="link-mark">
                         {dict.about.closing.experience}
                     </Link>
                     {dict.about.closing.end}
                 </p>
-                <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+                <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-3">
                     <Link
                         href={localeHref(locale, "/contact")}
-                        className="group inline-flex items-center gap-2 border-b border-foreground pb-1 text-sm font-medium hover:border-signature hover:text-signature"
+                        className="link-mark inline-flex items-center gap-2 font-semibold"
                     >
                         {dict.about.contactCta}
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        <ArrowRight className="h-4 w-4" aria-hidden />
                     </Link>
-                    <a
-                        href={`mailto:${profile.email}`}
-                        className="font-mono text-sm text-muted-foreground hover:text-foreground"
-                    >
+                    <a href={`mailto:${profile.email}`} className="link-mark font-mono text-sm">
                         {profile.email}
                     </a>
                 </div>

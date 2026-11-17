@@ -4,79 +4,72 @@
 
 @layer base {
     :root {
-        /* Editorial warm-paper light theme */
-        --background: 40 30% 97%;
-        --foreground: 220 16% 12%;
+        --background: 0 0% 100%;
+        --foreground: 0 0% 9%;
 
-        --card: 40 24% 99%;
-        --card-foreground: 220 16% 12%;
+        --primary: 0 0% 9%;
+        --primary-foreground: 0 0% 100%;
 
-        --popover: 40 24% 99%;
-        --popover-foreground: 220 16% 12%;
+        --secondary: 0 0% 96%;
+        --secondary-foreground: 0 0% 9%;
 
-        --primary: 220 18% 12%;
-        --primary-foreground: 40 30% 97%;
+        --muted: 0 0% 96%;
+        /* #5C5C5C: secondary text, 6.7:1 on white */
+        --muted-foreground: 0 0% 36%;
+        /* #737373: metadata and labels, 4.7:1 on white */
+        --subtle: 0 0% 45%;
 
-        --secondary: 38 20% 93%;
-        --secondary-foreground: 220 18% 14%;
-
-        --muted: 38 18% 93%;
-        --muted-foreground: 30 6% 42%;
-
-        --accent: 38 22% 91%;
-        --accent-foreground: 220 18% 14%;
+        --accent: 0 0% 96%;
+        --accent-foreground: 0 0% 9%;
 
         --destructive: 0 72% 48%;
-        --destructive-foreground: 40 30% 97%;
+        --destructive-foreground: 0 0% 100%;
 
-        --border: 34 14% 86%;
-        --input: 34 14% 86%;
-        --ring: 220 16% 12%;
+        /* #E8E8E8 hairlines */
+        --border: 0 0% 91%;
+        --input: 0 0% 91%;
+        --line: 0 0% 91%;
+        --ring: 0 0% 9%;
 
-        /* Signature accent — bright yellow adjusted for contrast */
-        --signature: 48 96% 45%;
-        --signature-foreground: 40 30% 97%;
+        /* #FEFF0D. About 1.1:1 on white: use only as a fill under ink, never as text. */
+        --brand: 254 255 13;
+        --brand-ink: 23 23 23;
 
-        /* Editorial hairline */
-        --line: 30 12% 82%;
+        --radius: 0.125rem;
 
-        --radius: 0.25rem;
+        --display-tracking: -0.035em;
+        --text-tracking: 0;
     }
 
     .dark {
-        /* Warm near-black */
-        --background: 30 8% 7%;
-        --foreground: 40 18% 91%;
+        --background: 0 0% 9%;
+        --foreground: 0 0% 96%;
 
-        --card: 30 7% 10%;
-        --card-foreground: 40 18% 91%;
+        --primary: 0 0% 96%;
+        --primary-foreground: 0 0% 9%;
 
-        --popover: 30 7% 10%;
-        --popover-foreground: 40 18% 91%;
+        --secondary: 0 0% 14%;
+        --secondary-foreground: 0 0% 96%;
 
-        --primary: 40 18% 91%;
-        --primary-foreground: 30 8% 7%;
+        --muted: 0 0% 14%;
+        --muted-foreground: 0 0% 70%;
+        --subtle: 0 0% 60%;
 
-        --secondary: 30 6% 15%;
-        --secondary-foreground: 40 18% 91%;
-
-        --muted: 30 6% 15%;
-        --muted-foreground: 36 8% 60%;
-
-        --accent: 30 6% 16%;
-        --accent-foreground: 40 18% 91%;
+        --accent: 0 0% 15%;
+        --accent-foreground: 0 0% 96%;
 
         --destructive: 0 62% 42%;
-        --destructive-foreground: 40 18% 91%;
+        --destructive-foreground: 0 0% 96%;
 
-        --border: 34 8% 19%;
-        --input: 34 8% 19%;
-        --ring: 40 18% 80%;
+        --border: 0 0% 20%;
+        --input: 0 0% 20%;
+        --line: 0 0% 20%;
+        --ring: 0 0% 96%;
+    }
 
-        --signature: 60 100% 70%;
-        --signature-foreground: 30 8% 7%;
-
-        --line: 34 8% 22%;
+    :root:lang(zh) {
+        --display-tracking: 0.01em;
+        --text-tracking: 0.02em;
     }
 }
 
@@ -96,78 +89,107 @@
     body {
         @apply bg-background text-foreground;
         font-feature-settings: "kern", "liga", "calt";
+        font-optical-sizing: auto;
+        letter-spacing: var(--text-tracking);
     }
 
-    /* Editorial rhythm helpers */
+    p,
+    li,
+    dd {
+        text-wrap: pretty;
+    }
+
     ::selection {
-        background: hsl(var(--signature) / 0.9);
-        color: hsl(var(--signature-foreground));
+        background: rgb(var(--brand));
+        color: rgb(var(--brand-ink));
+    }
+
+    :focus-visible {
+        outline: 2px solid hsl(var(--foreground));
+        outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 }
 
 @layer components {
-    /* Small mono metadata label */
+    .font-display {
+        font-family: theme("fontFamily.display");
+        letter-spacing: var(--display-tracking);
+        text-wrap: balance;
+    }
+
+    :root:lang(zh) .hero-title {
+        font-size: clamp(2.1rem, 4.6vw, 3.75rem);
+        line-height: 1.16;
+    }
+
+    /* Break only at punctuation, spaces and authored "|" points. */
+    :root:lang(zh) .font-display {
+        /* Referenced only here, so English pages never download the CJK font. */
+        font-family: var(--font-latin), var(--font-cjk-display), "PingFang TC", "Microsoft JhengHei",
+            "Noto Sans CJK TC", ui-sans-serif, system-ui, sans-serif;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
+    }
+
     .label-mono {
-        @apply font-mono text-[0.68rem] uppercase tracking-[0.18em] text-muted-foreground;
+        @apply font-mono text-[0.68rem] uppercase tracking-[0.16em] text-subtle;
     }
 
-    /* Underline that grows from the left on hover — editorial link */
-    .link-editorial {
-        @apply relative inline-block;
-    }
-    .link-editorial::after {
-        content: "";
-        @apply absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-300 ease-out;
-    }
-    .link-editorial:hover::after {
-        @apply scale-x-100;
+    .mark {
+        background: rgb(var(--brand));
+        color: rgb(var(--brand-ink));
+        padding: 0 0.12em;
+        margin: 0 -0.04em;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
     }
 
-    /* Thin top rule used to open a section */
-    .rule-top {
-        @apply border-t border-[hsl(var(--line))];
+    /* Drawn as a background so the hover block follows text across line wraps. */
+    .link-mark,
+    .mark-hover {
+        background-image: linear-gradient(rgb(var(--brand)), rgb(var(--brand)));
+        background-repeat: no-repeat;
+        background-position: 0 100%;
+        background-size: 100% 0;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+        transition: background-size 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
     }
 
-    /* Scroll-triggered fade-in animations */
-    .animate-on-scroll {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    .link-mark {
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.22em;
     }
 
-    .animate-on-scroll.is-visible {
-        opacity: 1;
-        transform: translateY(0);
+    .link-mark:hover,
+    .group:hover .link-mark,
+    .group:hover .mark-hover,
+    .group:focus-visible .mark-hover {
+        background-size: 100% 100%;
+        color: rgb(var(--brand-ink));
     }
 
-    /* Staggered children animation */
-    .stagger-children > * {
-        opacity: 0;
-        transform: translateY(12px);
-        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    .on-brand .link-mark,
+    .on-brand .mark-hover {
+        background-image: linear-gradient(rgb(var(--brand-ink)), rgb(var(--brand-ink)));
     }
-
-    .stagger-children.is-visible > *:nth-child(1) { transition-delay: 0ms; }
-    .stagger-children.is-visible > *:nth-child(2) { transition-delay: 60ms; }
-    .stagger-children.is-visible > *:nth-child(3) { transition-delay: 120ms; }
-    .stagger-children.is-visible > *:nth-child(4) { transition-delay: 180ms; }
-    .stagger-children.is-visible > *:nth-child(5) { transition-delay: 240ms; }
-    .stagger-children.is-visible > *:nth-child(6) { transition-delay: 300ms; }
-
-    .stagger-children.is-visible > * {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    /* Hover lift effect for cards/rows */
-    .hover-lift {
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .hover-lift:hover {
-        transform: translateY(-2px);
+    .on-brand .link-mark:hover,
+    .on-brand .group:hover .link-mark,
+    .on-brand .group:hover .mark-hover {
+        color: rgb(var(--brand));
     }
 }

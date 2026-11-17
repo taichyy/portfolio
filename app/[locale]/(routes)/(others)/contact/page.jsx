@@ -14,6 +14,10 @@ export async function generateMetadata(props) {
     }
 }
 
-const Contact = () => <ContactView />
+const Contact = async (props) => {
+    const locale = resolveLocale((await props.params).locale)
+
+    return <ContactView locale={locale} />
+}
 
 export default Contact

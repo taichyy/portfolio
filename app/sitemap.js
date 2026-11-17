@@ -4,7 +4,6 @@ import { SITE_URL, languageAlternates } from "@/lib/i18n/seo";
 
 const entry = (path, priority) => ({
     url: `${SITE_URL}/${LOCALES[0]}${path}`,
-    lastModified: new Date(),
     changeFrequency: "monthly",
     priority,
     alternates: { languages: languageAlternates(path) },

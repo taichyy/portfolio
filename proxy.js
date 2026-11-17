@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server"
 
 import { localeFromPathname } from "@/lib/i18n/routing"
-import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_HEADER, isLocale } from "@/lib/i18n/config"
+import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale } from "@/lib/i18n/config"
 
-// Picks a locale from the visitor's explicit choice (cookie) first, then from
-// the browser's Accept-Language header.
 const detectLocale = (request) => {
     const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
     if (isLocale(cookieLocale)) return cookieLocale;
@@ -30,12 +28,7 @@ export default function proxy(request) {
     const { pathname, search } = request.nextUrl;
     const pathLocale = localeFromPathname(pathname);
 
-    if (pathLocale) {
-        // `not-found.jsx` gets no route params, so hand it the locale here.
-        const headers = new Headers(request.headers);
-        headers.set(LOCALE_HEADER, pathLocale);
-        return NextResponse.next({ request: { headers } });
-    }
+    if (pathLocale) return NextResponse.next();
 
     const locale = detectLocale(request);
     const url = request.nextUrl.clone();
@@ -46,8 +39,7 @@ export default function proxy(request) {
 }
 
 export const config = {
-    // Skip Next internals, metadata routes and anything with a file extension.
     matcher: [
-        "/((?!_next|api|images|icomoon|favicon.ico|robots.txt|sitemap.xml|.*\\.[\\w]+$).*)",
+        "/((?!_next|api|images|favicon.ico|robots.txt|sitemap.xml|.*\\.[\\w]+$).*)",
     ],
 };

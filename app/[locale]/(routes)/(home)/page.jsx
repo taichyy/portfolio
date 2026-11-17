@@ -1,234 +1,230 @@
-"use client"
-
 import Link from "next/link"
-import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react"
-import { useEffect, useState, useRef } from "react"
+import { ArrowRight, ArrowUpRight } from "lucide-react"
 
+import { getProjects } from "@/lib/data"
+import { localeHref } from "@/lib/i18n/routing"
 import ProjectRow from "@/components/project-row"
 import SiteFooter from "@/components/site-footer"
-import ScrollReveal from "@/components/scroll-reveal"
-import { getFeaturedProjects } from "@/lib/data"
-import { useI18n } from "@/components/providers/i18n-provider"
-import { getProfile, getExperience, getTechProfile } from "@/lib/profile"
+import { resolveLocale } from "@/lib/i18n/config"
+import FeatureBand from "./(components)/feature-band"
+import { getDictionary } from "@/lib/i18n/dictionaries"
+import { Marked, SectionLabel } from "@/components/editorial"
+import { getProfile, getExperience, getTechProfile, getTenure } from "@/lib/profile"
 
-export default function HomePage() {
-    const { locale, dict, href } = useI18n()
-    const [showScrollButton, setShowScrollButton] = useState(true)
-    const nextSectionRef = useRef(null)
+const byPriority = (a, b) => (a.priority || 99) - (b.priority || 99)
+
+const SeeAll = (props) => {
+    const { to, children } = props;
+    return (
+        <Link href={to} className="link-mark inline-flex items-center gap-1.5 text-sm font-medium">
+            {children}
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+        </Link>
+    )
+}
+
+const TenureNote = (props) => {
+    const { label, dict } = props;
+    const { fullTimeMonths, freelanceMonths } = getTenure();
+    const t = dict.home.tenure;
+
+    return (
+        <span className="group/tenure relative inline-block">
+            <button
+                type="button"
+                aria-describedby="tenure-note"
+                className="cursor-help text-left underline decoration-subtle decoration-dotted decoration-1 underline-offset-[0.3em]"
+            >
+                {label}
+            </button>
+            <span
+                id="tenure-note"
+                role="tooltip"
+                className="pointer-events-none absolute left-0 top-full z-20 mt-2 w-max translate-y-1 bg-foreground px-3 py-2.5 font-mono text-[0.72rem] leading-relaxed text-background opacity-0 transition duration-200 group-focus-within/tenure:translate-y-0 group-focus-within/tenure:opacity-100 group-hover/tenure:translate-y-0 group-hover/tenure:opacity-100"
+            >
+                <span className="flex gap-3">
+                    <span className="text-brand">{t.fullTime}</span>
+                    <span>{t.yearsMonths(fullTimeMonths)}</span>
+                </span>
+                <span className="flex gap-3">
+                    <span className="text-brand">{t.freelance}</span>
+                    <span>{t.years(freelanceMonths)}</span>
+                </span>
+            </span>
+        </span>
+    )
+}
+
+const HomePage = async (props) => {
+    const locale = resolveLocale((await props.params).locale)
+    const dict = getDictionary(locale)
+    const href = (path) => localeHref(locale, path)
 
     const profile = getProfile(locale)
     const experience = getExperience(locale)
     const techProfile = getTechProfile(locale)
-    const featuredProjects = getFeaturedProjects(locale)
 
-    useEffect(() => {
-        const handleScroll = () => {
-            // 如果滾動超過 100px，隱藏按鈕
-            setShowScrollButton(window.scrollY < 100)
-        }
+    const projects = getProjects(locale).sort(byPriority)
+    const lead = projects.find((p) => p.featured)
+    const rest = projects.filter((p) => p !== lead)
 
-        window.addEventListener("scroll", handleScroll, { passive: true })
-        return () => window.removeEventListener("scroll", handleScroll)
-    }, [])
-
-    const scrollToNextSection = () => {
-        if (nextSectionRef.current) {
-            const navHeight = 64 // 導航列高度 (h-16 = 64px)
-            const offset = 40 // 額外往上一點的偏移
-            const elementPosition = nextSectionRef.current.getBoundingClientRect().top
-            const offsetPosition = elementPosition + window.scrollY - navHeight - offset
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            })
-        }
-    }
+    const facts = [
+        { k: dict.home.facts.currently, v: <TenureNote label={profile.currentRole} dict={dict} /> },
+        { k: dict.home.facts.focus, v: profile.focus },
+        { k: dict.home.facts.based, v: profile.location },
+    ]
+    const github = profile.socials.find((s) => s.label === "GitHub")
 
     return (
         <main className="min-h-screen">
-            {/* ── Identity ─────────────────────────────────────── */}
-            <section className="relative mx-auto flex min-h-screen max-w-[1240px] flex-col justify-center px-6 py-24">
-                <div>
-                    <h1 className="font-serif text-6xl leading-none animate-fade-up [animation-delay:60ms] md:text-8xl">
-                        Tai
+            <section className="mx-auto grid max-w-[1240px] grid-cols-1 gap-x-12 gap-y-14 px-6 pb-20 pt-32 md:px-10 md:pb-28 md:pt-44 lg:grid-cols-12">
+                <div className="lg:col-span-8">
+                    <h1 className="hero-title font-display text-[2.35rem] font-extrabold leading-[1.08] sm:text-5xl md:text-[3.9rem] lg:text-[4.4rem] lg:leading-[1.04]">
+                        {profile.headline.map((line, i) => (
+                            <span key={i} className="block">
+                                <Marked text={line} />
+                            </span>
+                        ))}
                     </h1>
 
-                    <div className="mt-6 flex flex-col gap-1 animate-fade-up [animation-delay:120ms]">
-                        <p className="font-mono text-sm uppercase tracking-[0.18em]">
-                            {dict.home.role}
-                        </p>
-                        <p className="font-mono text-sm text-muted-foreground">
-                            {dict.home.currently} — {profile.currentRole}
-                        </p>
-                    </div>
-
-                    <p className="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground animate-fade-up [animation-delay:180ms]">
+                    <p className="mt-9 max-w-xl text-lg leading-[1.75] text-muted-foreground">
                         {profile.intro}
                     </p>
 
-                    <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 animate-fade-up [animation-delay:240ms]">
-                        <Link
-                            href={href("/experience")}
-                            className="group inline-flex items-center gap-2 border-b border-foreground pb-1 text-sm font-medium transition-colors hover:border-signature hover:text-signature"
-                        >
-                            {dict.home.viewExperience}
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
-                        <Link
-                            href={href("/projects")}
-                            className="group inline-flex items-center gap-2 border-b border-transparent pb-1 text-sm font-medium text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
-                        >
-                            {dict.home.viewProjects}
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
-                        <a
-                            href={`mailto:${profile.email}`}
-                            className="font-mono text-sm text-muted-foreground hover:text-foreground"
-                        >
-                            {profile.email}
-                        </a>
+                    <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+                        <SeeAll to={href("/projects")}>{dict.home.viewProjects}</SeeAll>
+                        <SeeAll to={href("/experience")}>{dict.home.viewExperience}</SeeAll>
                     </div>
                 </div>
 
-                {/* Scroll down button */}
-                <button
-                    onClick={scrollToNextSection}
-                    className={`absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground transition-all duration-500 hover:text-foreground ${
-                        showScrollButton ? "opacity-100" : "opacity-0 pointer-events-none"
-                    }`}
-                    aria-label={dict.home.scrollDownAria}
-                >
-                    <span className="label-mono">{dict.home.scrollDown}</span>
-                    <ChevronDown className="h-5 w-5 animate-bounce" />
-                </button>
+                <aside className="lg:col-span-4 lg:pt-4">
+                    <dl className="border-t border-foreground">
+                        {facts.map((f) => (
+                            <div key={f.k} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-4 border-b border-line py-3.5">
+                                <dt className="label-mono pt-0.5">{f.k}</dt>
+                                <dd className="text-[0.95rem]">{f.v}</dd>
+                            </div>
+                        ))}
+                        <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-4 border-b border-line py-3.5">
+                            <dt className="label-mono pt-0.5">{dict.home.facts.elsewhere}</dt>
+                            <dd className="flex flex-col items-start gap-1.5 text-[0.95rem]">
+                                <a href={`mailto:${profile.email}`} className="link-mark">
+                                    {profile.email}
+                                </a>
+                                {github && (
+                                    <a href={github.href} target="_blank" rel="noopener noreferrer" className="link-mark">
+                                        GitHub
+                                    </a>
+                                )}
+                            </dd>
+                        </div>
+                    </dl>
+                </aside>
             </section>
 
-            {/* ── Professional summary ─────────────────────────── */}
-            <ScrollReveal>
-                <section ref={nextSectionRef} className="mx-auto max-w-[1240px] px-6">
-                    <div className="rule-top grid grid-cols-1 gap-x-12 gap-y-6 pt-10 lg:grid-cols-[16rem_minmax(0,1fr)]">
-                        <h2 className="font-mono text-sm uppercase tracking-[0.2em]">
-                            {dict.home.profile}
-                        </h2>
-                        <div className="max-w-prose space-y-5">
-                            {profile.summary.map((p, i) => (
-                                <p key={i} className="text-[1.05rem] leading-8 text-foreground/90">
-                                    {p}
-                                </p>
-                            ))}
-                        </div>
+            {lead && <FeatureBand project={lead} locale={locale} />}
+
+            <section className="mx-auto mt-24 grid max-w-[1240px] grid-cols-1 gap-x-12 gap-y-8 px-6 md:mt-32 md:px-10 lg:grid-cols-12">
+                <div className="lg:col-span-3">
+                    <SectionLabel>{dict.home.profile}</SectionLabel>
+                </div>
+                <div className="space-y-6 lg:col-span-8">
+                    {profile.summary.map((p, i) => (
+                        <p
+                            key={i}
+                            className={i === 0
+                                ? "text-2xl font-semibold leading-[1.5] [overflow-wrap:anywhere] [word-break:keep-all] md:text-[1.75rem]"
+                                : "max-w-2xl text-[1.02rem] leading-[1.85] text-muted-foreground"}
+                        >
+                            {p}
+                        </p>
+                    ))}
+                </div>
+            </section>
+
+            {rest.length > 0 && (
+                <section className="mx-auto mt-24 max-w-[1240px] px-6 md:mt-32 md:px-10">
+                    <SectionLabel
+                        className="mb-8"
+                        aside={<SeeAll to={href("/projects")}>{dict.home.allProjects}</SeeAll>}
+                    >
+                        {dict.home.selectedWork}
+                    </SectionLabel>
+                    <div className="border-b border-line">
+                        {rest.map((project) => (
+                            <ProjectRow key={project.slug} project={project} locale={locale} />
+                        ))}
                     </div>
                 </section>
-            </ScrollReveal>
-
-            {/* ── Selected work ────────────────────────────────── */}
-            {featuredProjects.length > 0 && (
-                <ScrollReveal delay={100}>
-                    <section className="mx-auto mt-24 max-w-[1240px] px-6">
-                        <div className="mb-6 flex items-baseline justify-between">
-                            <h2 className="font-mono text-sm uppercase tracking-[0.2em]">
-                                {dict.home.selectedWork}
-                            </h2>
-                            <Link
-                                href={href("/projects")}
-                                className="group inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
-                            >
-                                {dict.home.allProjects}
-                                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                            </Link>
-                        </div>
-                        <div>
-                            {featuredProjects.map((project, i) => (
-                                <ProjectRow key={project.slug} project={project} index={i} />
-                            ))}
-                            <div className="border-t border-line" />
-                        </div>
-                    </section>
-                </ScrollReveal>
             )}
 
-            {/* ── Experience ───────────────────────────────────── */}
-            <ScrollReveal delay={150} stagger>
-                <section className="mx-auto mt-24 max-w-[1240px] px-6">
-                    <div className="mb-6 flex items-baseline justify-between">
-                        <h2 className="font-mono text-sm uppercase tracking-[0.2em]">
-                            {dict.home.experience}
-                        </h2>
-                        <Link
-                            href={href("/experience")}
-                            className="group inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
+            <section className="mx-auto mt-24 max-w-[1240px] px-6 md:mt-32 md:px-10">
+                <SectionLabel
+                    className="mb-8"
+                    aside={<SeeAll to={href("/experience")}>{dict.home.fullExperience}</SeeAll>}
+                >
+                    {dict.home.experience}
+                </SectionLabel>
+                <ol className="border-b border-line">
+                    {experience.map((job) => (
+                        <li
+                            key={job.company}
+                            className="grid grid-cols-1 gap-x-10 gap-y-1 border-t border-line py-6 md:grid-cols-[11rem_minmax(0,1fr)]"
                         >
-                            {dict.home.fullExperience}
-                            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
-                    </div>
-                    <div>
-                        {experience.map((job) => (
-                            <div
-                                key={job.company}
-                                className="flex flex-col gap-1 border-t border-line py-5 px-4 transition-all duration-300 hover:bg-muted/30 hover:-mx-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
-                            >
-                                <div className="min-w-0">
-                                    <p className="font-serif text-xl">{job.company}</p>
-                                    <p className="mt-0.5 text-sm text-muted-foreground">{job.role}</p>
-                                </div>
-                                <span className="shrink-0 font-mono text-xs text-muted-foreground/70 tabular-nums">
-                                    {job.period}
-                                </span>
+                            <span className="font-mono text-[0.75rem] tabular-nums text-subtle md:pt-1.5">
+                                {job.period}
+                            </span>
+                            <div>
+                                <p className="font-display text-xl font-bold md:text-2xl">{job.company}</p>
+                                <p className="mt-1 text-muted-foreground">{job.role}</p>
                             </div>
-                        ))}
-                        <div className="border-t border-line" />
-                    </div>
-                </section>
-            </ScrollReveal>
+                        </li>
+                    ))}
+                </ol>
+            </section>
 
-            {/* ── Technical profile ────────────────────────────── */}
-            <ScrollReveal delay={100} stagger>
-                <section className="mx-auto mt-24 max-w-[1240px] px-6">
-                    <h2 className="mb-8 font-mono text-sm uppercase tracking-[0.2em]">
-                        {dict.home.techProfile}
-                    </h2>
-                    <dl className="grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2">
-                        {techProfile.map((group) => (
-                            <div key={group.id} className="border-t border-line pt-5 transition-colors hover:bg-muted/20">
-                                <dt className="font-serif text-lg">{group.label}</dt>
-                                <dd className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
+            <section className="mx-auto mt-24 max-w-[1240px] px-6 md:mt-32 md:px-10">
+                <SectionLabel className="mb-8">{dict.home.techProfile}</SectionLabel>
+                <dl className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+                    {techProfile.map((group) => (
+                        <div key={group.id} className="border-t border-foreground pt-4">
+                            <dt className="font-display text-lg font-bold">{group.label}</dt>
+                            <dd className="mt-3">
+                                <ul className="space-y-1.5">
                                     {group.items.map((item) => (
-                                        <span key={item} className="text-[0.95rem] text-foreground/90">
+                                        <li key={item} className="text-[0.95rem] text-muted-foreground">
                                             {item}
-                                        </span>
+                                        </li>
                                     ))}
-                                </dd>
-                            </div>
-                        ))}
-                    </dl>
-                </section>
-            </ScrollReveal>
+                                </ul>
+                            </dd>
+                        </div>
+                    ))}
+                </dl>
+            </section>
 
-            {/* ── Contact ──────────────────────────────────────── */}
-            <ScrollReveal delay={100}>
-                <section className="mx-auto mt-24 max-w-[1240px] px-6">
-                    <div className="rule-top pt-12">
-                        <p className="label-mono">{dict.home.contact}</p>
-                        <p className="mt-5 max-w-2xl font-serif text-3xl leading-tight md:text-4xl">
-                            {profile.contact.heading}
-                        </p>
-                        <p className="mt-5 max-w-xl leading-8 text-muted-foreground">
-                            {profile.contact.body}
-                        </p>
-                        <a
-                            href={`mailto:${profile.email}`}
-                            className="group mt-6 inline-flex items-center gap-2 font-mono text-lg transition-all hover:text-signature hover:translate-x-1"
-                        >
-                            {profile.email}
-                            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </a>
-                    </div>
-                </section>
-            </ScrollReveal>
+            <section className="mx-auto mt-28 max-w-[1240px] px-6 md:mt-40 md:px-10">
+                <div className="border-t border-foreground pt-10 md:pt-14">
+                    <SectionLabel as="p">{dict.home.contact}</SectionLabel>
+                    <h2 className="font-display mt-8 max-w-4xl text-[2.6rem] font-extrabold leading-[1.02] md:text-7xl">
+                        <Marked text={profile.contact.heading} />
+                    </h2>
+                    <p className="mt-7 max-w-xl text-[1.02rem] leading-[1.8] text-muted-foreground">
+                        {profile.contact.body}
+                    </p>
+                    <a
+                        href={`mailto:${profile.email}`}
+                        className="link-mark mt-9 inline-flex items-center gap-3 font-display text-2xl font-bold md:text-4xl"
+                    >
+                        {profile.email}
+                        <ArrowUpRight className="h-6 w-6 md:h-8 md:w-8" aria-hidden />
+                    </a>
+                </div>
+            </section>
 
-            <SiteFooter />
+            <SiteFooter locale={locale} />
         </main>
     )
 }
+
+export default HomePage

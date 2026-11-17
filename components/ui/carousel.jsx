@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const CarouselContext = React.createContext(null);
 
@@ -30,14 +31,28 @@ function Carousel({
         { ...opts, axis: orientation === "horizontal" ? "x" : "y" },
         plugins
     );
-    const [canScrollPrev, setCanScrollPrev] = React.useState(false);
-    const [canScrollNext, setCanScrollNext] = React.useState(false);
-
-    const onSelect = React.useCallback((api) => {
-        if (!api) return;
-        setCanScrollPrev(api.canScrollPrev());
-        setCanScrollNext(api.canScrollNext());
-    }, []);
+    const subscribe = React.useCallback(
+        (onChange) => {
+            if (!api) return () => {};
+            api.on("select", onChange);
+            api.on("reInit", onChange);
+            return () => {
+                api.off("select", onChange);
+                api.off("reInit", onChange);
+            };
+        },
+        [api]
+    );
+    const canScrollPrev = React.useSyncExternalStore(
+        subscribe,
+        () => api?.canScrollPrev() ?? false,
+        () => false
+    );
+    const canScrollNext = React.useSyncExternalStore(
+        subscribe,
+        () => api?.canScrollNext() ?? false,
+        () => false
+    );
 
     const scrollPrev = React.useCallback(() => api?.scrollPrev(), [api]);
     const scrollNext = React.useCallback(() => api?.scrollNext(), [api]);
@@ -59,16 +74,6 @@ function Carousel({
         if (!api || !setApi) return;
         setApi(api);
     }, [api, setApi]);
-
-    React.useEffect(() => {
-        if (!api) return;
-        onSelect(api);
-        api.on("reInit", onSelect);
-        api.on("select", onSelect);
-        return () => {
-            api?.off("select", onSelect);
-        };
-    }, [api, onSelect]);
 
     return (
         <CarouselContext.Provider
@@ -130,6 +135,7 @@ function CarouselItem({ className, ...props }) {
 
 function CarouselPrevious({ className, variant = "outline", size = "icon", ...props }) {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+    const { dict } = useI18n();
     return (
         <Button
             variant={variant}
@@ -146,13 +152,14 @@ function CarouselPrevious({ className, variant = "outline", size = "icon", ...pr
             {...props}
         >
             <ArrowLeft className="h-4 w-4" />
-            <span className="sr-only">Previous slide</span>
+            <span className="sr-only">{dict.carousel.prev}</span>
         </Button>
     );
 }
 
 function CarouselNext({ className, variant = "outline", size = "icon", ...props }) {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
+    const { dict } = useI18n();
     return (
         <Button
             variant={variant}
@@ -169,7 +176,7 @@ function CarouselNext({ className, variant = "outline", size = "icon", ...props 
             {...props}
         >
             <ArrowRight className="h-4 w-4" />
-            <span className="sr-only">Next slide</span>
+            <span className="sr-only">{dict.carousel.next}</span>
         </Button>
     );
 }

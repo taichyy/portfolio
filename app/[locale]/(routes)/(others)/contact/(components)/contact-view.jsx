@@ -1,79 +1,65 @@
-"use client"
-
-import Image from "next/image"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
 import { ArrowUpRight } from "lucide-react"
 
 import { getProfile } from "@/lib/profile"
-import { useI18n } from "@/components/providers/i18n-provider"
+import ThemeLogo from "@/components/theme-logo"
+import { PageHeader } from "@/components/editorial"
+import { getDictionary } from "@/lib/i18n/dictionaries"
 
-const ContactView = () => {
-    const { locale, dict } = useI18n()
-    const { resolvedTheme } = useTheme()
-    const [mounted, setMounted] = useState(false)
-
-    const profile = getProfile(locale)
-
-    useEffect(() => {
-        setMounted(true)
-    }, [])
+const ContactRow = (props) => {
+    const { label, value, href, external } = props;
 
     return (
-        <section className="mx-auto flex min-h-[70vh] max-w-[1240px] flex-col justify-center px-6 pt-32 pb-12 md:pt-40">
-            {/* Logo */}
-            {mounted && (
-                <div className="relative mb-6 h-16 w-16 animate-fade-up md:h-20 md:w-20">
-                    <Image
-                        src={resolvedTheme === 'dark' ? '/logo-white.png' : '/logo-dark.png'}
-                        alt="Tai Logo"
-                        fill
-                        className="object-contain"
-                        priority
-                    />
-                </div>
-            )}
+        <a
+            href={href}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noopener noreferrer" : undefined}
+            className="group grid grid-cols-1 gap-x-10 gap-y-1 border-t border-line py-6 md:grid-cols-[9rem_minmax(0,1fr)_auto] md:items-center"
+        >
+            <span className="label-mono">{label}</span>
+            <span className="font-display text-2xl font-bold md:text-[2rem]">
+                <span className="mark-hover">{value}</span>
+            </span>
+            <ArrowUpRight
+                aria-hidden
+                className="hidden h-6 w-6 text-subtle transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground md:block"
+            />
+        </a>
+    )
+}
 
-            <p className="label-mono">{dict.contact.eyebrow}</p>
-            <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.15] md:text-6xl">
-                {profile.contact.heading}
-            </h1>
-            <p className="mt-6 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
-                {profile.contact.body}
-            </p>
+const ContactView = (props) => {
+    const { locale } = props;
+    const dict = getDictionary(locale)
+    const profile = getProfile(locale)
 
-            <div className="mt-12 max-w-xl divide-y divide-line border-y border-line">
-                <a
-                    href={`mailto:${profile.contact.email}`}
-                    className="group flex items-center justify-between py-5"
-                >
-                    <span>
-                        <span className="label-mono block">{dict.contact.email}</span>
-                        <span className="mt-1 block font-mono text-lg transition-colors group-hover:text-signature">
-                            {profile.contact.email}
-                        </span>
-                    </span>
-                    <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signature" />
-                </a>
+    return (
+        <section className="mx-auto max-w-[1240px] px-6 pt-32 md:px-10 md:pt-44">
+            <div className="relative mb-8 h-14 w-14 md:h-16 md:w-16">
+                <ThemeLogo sizes="64px" alt="HeyTai" priority />
+            </div>
 
+            <PageHeader
+                eyebrow={dict.contact.eyebrow}
+                title={profile.contact.heading}
+                intro={profile.contact.body}
+            />
+
+            <div className="mt-16 max-w-4xl border-b border-line md:mt-20">
+                <ContactRow
+                    label={dict.contact.email}
+                    value={profile.email}
+                    href={`mailto:${profile.email}`}
+                />
                 {profile.socials
                     .filter((s) => s.label !== "Email")
                     .map((s) => (
-                        <a
+                        <ContactRow
                             key={s.label}
+                            label={s.label}
+                            value={s.href.replace(/^https?:\/\//, "")}
                             href={s.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group flex items-center justify-between py-5"
-                        >
-                            <span>
-                                <span className="label-mono block">{s.label}</span>
-                                <span className="mt-1 block font-mono text-lg transition-colors group-hover:text-signature">
-                                    {s.href.replace(/^https?:\/\//, "")}
-                                </span>
-                            </span>
-                            <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signature" />
-                        </a>
+                            external
+                        />
                     ))}
             </div>
         </section>

@@ -2,16 +2,18 @@
 
 import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 
 import { useI18n } from "@/components/providers/i18n-provider"
+
+// false during SSR and hydration, true afterwards.
+const subscribe = () => () => {}
+const useIsClient = () => useSyncExternalStore(subscribe, () => true, () => false)
 
 export function ThemeToggle() {
     const { dict } = useI18n()
     const { theme, setTheme } = useTheme()
-    const [mounted, setMounted] = useState(false)
-
-    useEffect(() => setMounted(true), [])
+    const mounted = useIsClient()
 
     if (!mounted) {
         return (
