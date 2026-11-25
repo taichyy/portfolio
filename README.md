@@ -1,57 +1,45 @@
-# TaiChe's taiche-tw
+# heytai.dev
 
-This is a Next.js project bootstrapped with create-next-app.
+Tai's professional portfolio as a software engineer, in Traditional Chinese
+and English.
 
-## 🚀 Getting Started
+Built with Next.js 16 (App Router), React 19 and Tailwind CSS 3. Every page is
+statically generated.
 
-###  Run the Development Server
+## Development
 
-Run the following command based on your package manager:
-
-```bash
-npm install
-```
-
-then
-
-```bash
-npm run dev  # Using npm
-yarn dev     # Using Yarn
-pnpm dev     # Using pnpm
-bun dev      # Using Bun
-```
-
-Then, open http://localhost:3000 in your browser.
-
-📌 Refer to Next.js deployment documentation for more details.
-
----
-
-# 太成的太成網
-
-主要由 Next.js 進行開發。
-
-## 🚀 開始
-
-###  架設於本機開發環境
-
-使用以下指令：
+Requires Node.js 22 (see `.nvmrc`).
 
 ```bash
 npm install
+npm run dev
 ```
 
-然後
+Open http://localhost:3000. Bare paths redirect to a locale (`/zh-TW` or
+`/en`).
 
-```bash
-npm run dev  # Using npm
-yarn dev     # Using Yarn
-pnpm dev     # Using pnpm
-bun dev      # Using Bun
-```
+Other scripts:
 
-然後，打開 http://localhost:3000 即可。
+| Command | What it does |
+|---|---|
+| `npm run build` | Production build. `prebuild` first regenerates the Chinese display font subset. |
+| `npm run start` | Serves the production build. |
+| `npm run lint` | Runs ESLint. |
 
-📌 可至 Next.js 官方文件找到更多詳細資訊。
+## Where things live
 
+| Path | Contents |
+|---|---|
+| `lib/profile.js` | Profile, experience, education, about copy (`t(zh, en)` pairs) |
+| `lib/data.js` | Projects and case studies (`t(zh, en)` pairs) |
+| `lib/i18n/dictionaries.js` | UI strings |
+| `lib/site.js` | Email and social links |
+| `app/[locale]/` | Routes, layout, OG image |
+| `components/` | Shared components |
+| `scripts/subset-display-font.mjs` | Builds the Chinese display font subset |
 
+## Guidelines
+
+Read [DESIGN.md](DESIGN.md) before changing the design, copy or page structure.
+It records the decisions behind the current design so the site does not drift
+back to its old look.

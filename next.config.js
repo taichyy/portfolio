@@ -16,7 +16,8 @@ const nextConfig = {
             // Old numeric portfolio detail URLs → new slug URLs (preserve SEO)
             { source: "/portfolio/1", destination: "/projects/mold-tuning", permanent: true },
             { source: "/portfolio/2", destination: "/projects/ichiban-poster", permanent: true },
-            { source: "/portfolio/3", destination: "/projects/taiche", permanent: true },
+            // The Taiche studio project was removed from the portfolio.
+            { source: "/portfolio/3", destination: "/projects", permanent: true },
             { source: "/portfolio/4", destination: "/projects/taidypass", permanent: true },
             { source: "/portfolio/5", destination: "/projects/json-editor", permanent: true },
             // Interim redesign routes → projects
