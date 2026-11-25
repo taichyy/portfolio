@@ -46,7 +46,7 @@ const About = async (props) => {
         <section className="mx-auto max-w-[1240px] px-6 pt-32 md:px-10 md:pt-44">
             <header className="max-w-4xl">
                 <p className="label-mono">{dict.about.eyebrow}</p>
-                <h1 className="font-display mt-6 text-[2.4rem] font-extrabold leading-[1.1] md:text-[3.6rem]">
+                <h1 className="font-display mt-6 text-display-md font-extrabold leading-[1.1]">
                     {about.intro.map((line, i) => (
                         <span key={i} className="block">
                             <Marked text={line} />

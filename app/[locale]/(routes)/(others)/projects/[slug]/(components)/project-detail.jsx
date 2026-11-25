@@ -145,7 +145,7 @@ const ProjectDetail = (props) => {
         <article className="mx-auto max-w-[1240px] px-6 pt-28 md:px-10 md:pt-36">
             <div className="flex items-center justify-between">
                 <Link href={href("/projects")} className={backLink}>
-                    <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+                    <ArrowLeft className="h-3.5 w-3.5 transition-transform motion-safe:group-hover:-translate-x-0.5" aria-hidden />
                     {dict.project.back}
                 </Link>
                 {(liveLink || repoLink) && (
@@ -176,7 +176,7 @@ const ProjectDetail = (props) => {
                         </span>
                     )}
                 </div>
-                <h1 className="font-display mt-7 max-w-5xl text-[2.6rem] font-extrabold leading-[1.04] md:text-7xl">
+                <h1 className="font-display mt-7 max-w-5xl text-display-xl font-extrabold leading-[1.04]">
                     <Marked text={project.displayTitle || project.title} />
                 </h1>
                 <p className="mt-7 max-w-3xl text-xl font-medium leading-[1.6] text-muted-foreground md:text-2xl">
@@ -227,7 +227,7 @@ const ProjectDetail = (props) => {
                 </aside>
 
                 <div className="min-w-0">
-                    <Gallery images={images} title={project.title} />
+                    <Gallery images={images} title={project.title} transitionName={`project-shot-${project.slug}`} />
 
                     <div className="space-y-12">
                         {blocks.map((block, i) => {
@@ -275,7 +275,7 @@ const ProjectDetail = (props) => {
 
                     <div className="mt-16 border-t border-line pt-8">
                         <Link href={href("/projects")} className={backLink}>
-                            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+                            <ArrowLeft className="h-3.5 w-3.5 transition-transform motion-safe:group-hover:-translate-x-0.5" aria-hidden />
                             {dict.project.back}
                         </Link>
                     </div>

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight } from "lucide-react"
+import { ViewTransition } from "react"
 
 import { projectHref } from "@/lib/data"
 import { localeHref } from "@/lib/i18n/routing"
@@ -22,15 +23,18 @@ const FeatureBand = (props) => {
                         className="group order-1 block lg:order-2 lg:col-span-7"
                         aria-label={project.title}
                     >
-                        <div className="relative aspect-[16/10] overflow-hidden border border-brand-ink bg-white">
-                            <Image
-                                src={shot}
-                                alt={project.title}
-                                fill
-                                sizes="(min-width: 1024px) 680px, 100vw"
-                                className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
-                            />
-                        </div>
+                        <ViewTransition name={`project-shot-${project.slug}`} share="project-shot">
+                            <div className="relative aspect-[16/10] overflow-hidden border border-brand-ink bg-white">
+                                {/* The link already carries the title, so the image is decorative here. */}
+                                <Image
+                                    src={shot}
+                                    alt=""
+                                    fill
+                                    sizes="(min-width: 1024px) 680px, 100vw"
+                                    className="object-cover object-top transition-transform duration-700 motion-safe:group-hover:scale-[1.02]"
+                                />
+                            </div>
+                        </ViewTransition>
                     </Link>
                 )}
 
@@ -40,7 +44,7 @@ const FeatureBand = (props) => {
                         <SectionLabel tone="ink" as="p">{dict.home.featured}</SectionLabel>
                     </div>
 
-                    <h2 className="font-display mt-7 text-[2.4rem] font-extrabold leading-[1.05] md:text-6xl">
+                    <h2 className="font-display mt-7 text-display-lg font-extrabold leading-[1.05]">
                         <Marked text={project.displayTitle || project.title} />
                     </h2>
 

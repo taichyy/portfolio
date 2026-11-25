@@ -65,7 +65,7 @@ export const PageHeader = (props) => {
     return (
         <header className={cn("max-w-3xl", className)}>
             <p className="label-mono">{eyebrow}</p>
-            <h1 className="font-display mt-6 text-[2.6rem] font-extrabold leading-[1.05] md:text-7xl md:leading-[1]">
+            <h1 className="font-display mt-6 text-display-xl font-extrabold leading-[1.05] md:leading-[1]">
                 <Marked text={title} />
             </h1>
             {intro && (

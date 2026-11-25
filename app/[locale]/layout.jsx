@@ -8,7 +8,7 @@ import SiteNav from "@/components/site-nav"
 import { EMAIL, GITHUB_URL } from "@/lib/site"
 import { getEducation } from "@/lib/profile"
 import { getDictionary } from "@/lib/i18n/dictionaries"
-import SmoothNavigate from "@/components/smooth-navigate"
+import NavigationReset from "@/components/navigation-reset"
 import { SITE_URL, localeAlternates } from "@/lib/i18n/seo"
 import I18nProvider from "@/components/providers/i18n-provider"
 import { LOCALES, LOCALE_META, isLocale } from "@/lib/i18n/config"
@@ -139,9 +139,10 @@ const RootLayout = async (props) => {
         <html
             lang={LOCALE_META[locale].htmlLang}
             suppressHydrationWarning
+            data-scroll-behavior="smooth"
             className={`${latin.variable} ${cjk.variable} ${mono.variable}`}
         >
-            <body className="font-sans min-h-screen bg-background text-foreground antialiased">
+            <body className="font-sans min-h-dvh bg-background text-foreground antialiased">
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
@@ -150,15 +151,18 @@ const RootLayout = async (props) => {
                         ),
                     }}
                 />
+                <a href="#content" className="skip-link">
+                    {dict.nav.skipToContent}
+                </a>
                 <I18nProvider locale={locale}>
                     <ThemeProvider
                         attribute="class"
-                        defaultTheme="light"
-                        enableSystem={false}
+                        defaultTheme="system"
+                        enableSystem
                         disableTransitionOnChange={false}
                     >
                         <Analytics />
-                        <SmoothNavigate />
+                        <NavigationReset />
                         <SiteNav />
                         {children}
                     </ThemeProvider>

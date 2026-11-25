@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowUpRight } from "lucide-react"
+import { ViewTransition } from "react"
 
 import { projectHref } from "@/lib/data"
 import { localeHref } from "@/lib/i18n/routing"
@@ -15,7 +16,7 @@ const ProjectRow = (props) => {
     return (
         <Link
             href={localeHref(locale, projectHref(project))}
-            className="group grid grid-cols-[minmax(0,1fr)_6.5rem] gap-x-5 gap-y-4 border-t border-line py-8 outline-none md:grid-cols-[3.5rem_minmax(0,1fr)_9rem] md:gap-x-8 lg:grid-cols-[3.5rem_minmax(0,1fr)_12rem] lg:gap-x-10"
+            className="group grid grid-cols-[minmax(0,1fr)_6.5rem] gap-x-5 gap-y-4 border-t border-line py-8 md:grid-cols-[3.5rem_minmax(0,1fr)_9rem] md:gap-x-8 lg:grid-cols-[3.5rem_minmax(0,1fr)_12rem] lg:gap-x-10"
         >
             <div className="col-start-1 row-start-1 md:pt-2">
                 <NumberTab n={project.number} />
@@ -26,7 +27,7 @@ const ProjectRow = (props) => {
                     <span className="mark-hover"><Marked text={project.displayTitle || project.title} /></span>
                     <ArrowUpRight
                         aria-hidden
-                        className="ml-2 inline h-5 w-5 -translate-y-0.5 text-subtle transition-transform duration-300 group-hover:-translate-y-1.5 group-hover:translate-x-1 group-hover:text-foreground"
+                        className="ml-2 inline h-5 w-5 -translate-y-0.5 text-subtle transition duration-300 group-hover:text-foreground motion-safe:group-hover:-translate-y-1.5 motion-safe:group-hover:translate-x-1"
                     />
                 </h3>
 
@@ -55,15 +56,17 @@ const ProjectRow = (props) => {
             </div>
 
             {thumb && (
-                <div className="relative col-start-2 row-start-1 aspect-[4/3] self-start overflow-hidden border border-line bg-muted md:col-start-3">
-                    <Image
-                        src={thumb}
-                        alt=""
-                        fill
-                        sizes="(min-width: 1024px) 12rem, (min-width: 768px) 9rem, 6.5rem"
-                        className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-                    />
-                </div>
+                <ViewTransition name={`project-shot-${project.slug}`} share="project-shot">
+                    <div className="relative col-start-2 row-start-1 aspect-[4/3] self-start overflow-hidden border border-line bg-muted md:col-start-3">
+                        <Image
+                            src={thumb}
+                            alt=""
+                            fill
+                            sizes="(min-width: 1024px) 12rem, (min-width: 768px) 9rem, 6.5rem"
+                            className="object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-[1.03]"
+                        />
+                    </div>
+                </ViewTransition>
             )}
         </Link>
     )

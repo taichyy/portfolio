@@ -81,7 +81,13 @@
         color-scheme: light;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
-        scroll-behavior: smooth;
+        /* Keeps anchor targets and focused controls clear of the fixed 4rem
+           header (WCAG 2.4.11). */
+        scroll-padding-top: 5rem;
+
+        @media (prefers-reduced-motion: no-preference) {
+            scroll-behavior: smooth;
+        }
     }
     html.dark {
         color-scheme: dark;
@@ -109,17 +115,29 @@
         outline-offset: 3px;
     }
 
+    /* Cross-fade full document navigations (the locale switch is a plain
+       link). Client-side navigations use React <ViewTransition>. */
+    @media (prefers-reduced-motion: no-preference) {
+        @view-transition {
+            navigation: auto;
+        }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-        html {
-            scroll-behavior: auto;
+        ::view-transition-group(*),
+        ::view-transition-old(*),
+        ::view-transition-new(*) {
+            animation: none !important;
         }
-        *,
-        *::before,
-        *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
+    }
+
+    /* Thumbnails and the detail hero have different aspect ratios: fill the
+       morphing group and crop like the live images do. */
+    ::view-transition-old(.project-shot),
+    ::view-transition-new(.project-shot) {
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
     }
 }
 
@@ -131,7 +149,7 @@
     }
 
     :root:lang(zh) .hero-title {
-        font-size: clamp(2.1rem, 4.6vw, 3.75rem);
+        font-size: clamp(2.1rem, 1.3rem + 3vw, 3.75rem);
         line-height: 1.16;
     }
 
@@ -166,7 +184,12 @@
         background-size: 100% 0;
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
-        transition: background-size 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
+        transition: color 0.2s;
+
+        /* The fill wipes up from the baseline; without motion it just appears. */
+        @media (prefers-reduced-motion: no-preference) {
+            transition: background-size 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
+        }
     }
 
     .link-mark {
@@ -175,21 +198,143 @@
         text-underline-offset: 0.22em;
     }
 
-    .link-mark:hover,
-    .group:hover .link-mark,
-    .group:hover .mark-hover,
+    /* Keyboard focus gets the same highlight as hover. */
+    .link-mark:focus-visible,
+    .group:focus-visible .link-mark,
     .group:focus-visible .mark-hover {
         background-size: 100% 100%;
         color: rgb(var(--brand-ink));
+    }
+
+    /* Hover only where the device can hover, so taps do not stick. */
+    @media (hover: hover) and (pointer: fine) {
+        .link-mark:hover,
+        .group:hover .link-mark,
+        .group:hover .mark-hover {
+            background-size: 100% 100%;
+            color: rgb(var(--brand-ink));
+        }
     }
 
     .on-brand .link-mark,
     .on-brand .mark-hover {
         background-image: linear-gradient(rgb(var(--brand-ink)), rgb(var(--brand-ink)));
     }
-    .on-brand .link-mark:hover,
-    .on-brand .group:hover .link-mark,
-    .on-brand .group:hover .mark-hover {
+    .on-brand .link-mark:focus-visible,
+    .on-brand .group:focus-visible .link-mark,
+    .on-brand .group:focus-visible .mark-hover {
         color: rgb(var(--brand));
+    }
+    @media (hover: hover) and (pointer: fine) {
+        .on-brand .link-mark:hover,
+        .on-brand .group:hover .link-mark,
+        .on-brand .group:hover .mark-hover {
+            color: rgb(var(--brand));
+        }
+    }
+
+    .skip-link {
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        z-index: 1100;
+        padding: 0.6rem 0.9rem;
+        background: rgb(var(--brand));
+        color: rgb(var(--brand-ink));
+        font-weight: 600;
+        translate: 0 -200%;
+
+        &:focus-visible {
+            translate: 0 0;
+            outline-color: rgb(var(--brand-ink));
+        }
+    }
+
+    /* Header rule appears once the page scrolls. Without scroll-driven
+       animations the rule is simply always shown. */
+    .site-header {
+        border-bottom: 1px solid hsl(var(--line));
+    }
+    @supports (animation-timeline: scroll()) {
+        .site-header {
+            animation: header-rule linear both;
+            animation-timeline: scroll(root block);
+            animation-range: 0 8px;
+        }
+        @keyframes header-rule {
+            from {
+                border-bottom-color: transparent;
+            }
+            to {
+                border-bottom-color: hsl(var(--line));
+            }
+        }
+    }
+
+    /* Full-screen modal dialogs (mobile menu, image lightbox). */
+    .sheet-dialog {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        max-height: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        opacity: 0;
+        transition: opacity 0.25s, display 0.25s, overlay 0.25s;
+        transition-behavior: allow-discrete;
+
+        &[open] {
+            opacity: 1;
+
+            @starting-style {
+                opacity: 0;
+            }
+        }
+
+        &::backdrop {
+            background: transparent;
+        }
+    }
+
+    /* Keep scroll gestures from reaching the page behind a modal. Plain CSS,
+       no overflow lock on html/body, so the layout does not shift. */
+    dialog:modal {
+        overscroll-behavior: contain;
+    }
+    dialog::backdrop {
+        overflow: hidden;
+        overscroll-behavior: contain;
+    }
+
+    /* Toggletip anchored to its trigger. Without anchor positioning the
+       popover keeps the UA default and opens centred on screen. */
+    .tenure-tip {
+        border: 0;
+        opacity: 0;
+        transition: opacity 0.2s, display 0.2s, overlay 0.2s;
+        transition-behavior: allow-discrete;
+
+        &:popover-open {
+            opacity: 1;
+
+            @starting-style {
+                opacity: 0;
+            }
+        }
+    }
+    @supports (position-area: block-end) {
+        .tenure-trigger {
+            anchor-name: --tenure;
+        }
+        .tenure-tip {
+            position-anchor: --tenure;
+            position-area: block-end span-inline-end;
+            position-try-fallbacks: flip-block, flip-inline;
+            inset: auto;
+            margin: 0.5rem 0 0;
+        }
     }
 }

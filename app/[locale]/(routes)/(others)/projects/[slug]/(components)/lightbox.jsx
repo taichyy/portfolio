@@ -2,122 +2,124 @@
 
 import Image from "next/image"
 import { X } from "lucide-react"
-import { useEffect, useState } from "react"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { useEffect, useRef, useState } from "react"
 
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselPrevious,
-    CarouselNext,
-} from "@/components/ui/carousel"
+import Carousel from "@/components/ui/carousel"
 import { useI18n } from "@/components/providers/i18n-provider"
 
+// A native modal <dialog>: the browser makes the page inert, traps focus,
+// closes on Esc or the back gesture and returns focus to the zoom button.
 const Lightbox = (props) => {
     const { open, onOpenChange, images = [], startIndex = 0, title = "" } = props;
     const { dict } = useI18n()
     const multiple = images.length > 1
 
-    const [api, setApi] = useState(null)
-    const [current, setCurrent] = useState(startIndex + 1)
+    const dialogRef = useRef(null)
+    const carouselRef = useRef(null)
+    const onOpenChangeRef = useRef(onOpenChange)
+    const [current, setCurrent] = useState(startIndex)
 
-    // The carousel remounts at `startIndex` on (re)open; reset the counter
-    // during render rather than in an effect.
+    // Reset the counter on (re)open during render rather than in an effect.
     const [openedAt, setOpenedAt] = useState({ open, startIndex })
     if (openedAt.open !== open || openedAt.startIndex !== startIndex) {
         setOpenedAt({ open, startIndex })
-        setCurrent(startIndex + 1)
+        setCurrent(startIndex)
     }
 
     useEffect(() => {
-        if (!api) return
-        const onSelect = () => setCurrent(api.selectedScrollSnap() + 1)
-        api.on("select", onSelect)
-        return () => { api.off("select", onSelect) }
-    }, [api])
+        onOpenChangeRef.current = onOpenChange
+    }, [onOpenChange])
 
-    // Arrow keys when focus is outside the carousel (its own handler covers inside).
     useEffect(() => {
-        if (!open || !multiple) return
-        const onKey = (e) => {
-            if (e.defaultPrevented || !api) return
-            if (e.key === "ArrowRight") api.scrollNext()
-            else if (e.key === "ArrowLeft") api.scrollPrev()
+        const dialog = dialogRef.current
+        if (!dialog) return
+        if (open && !dialog.open) dialog.showModal()
+        if (!open && dialog.open) dialog.close()
+    }, [open])
+
+    useEffect(() => {
+        const dialog = dialogRef.current
+        if (!dialog) return
+        const onClose = () => onOpenChangeRef.current?.(false)
+        dialog.addEventListener("close", onClose)
+        return () => dialog.removeEventListener("close", onClose)
+    }, [])
+
+    // Arrow keys from anywhere in the dialog (e.g. the close button). The
+    // focused track already scrolls natively, so leave its keys alone.
+    const onKeyDown = (e) => {
+        if (!multiple || e.defaultPrevented) return
+        if (e.target.closest?.("[data-carousel-track]")) return
+        if (e.key === "ArrowRight") {
+            e.preventDefault()
+            carouselRef.current?.next()
+        } else if (e.key === "ArrowLeft") {
+            e.preventDefault()
+            carouselRef.current?.prev()
         }
-        window.addEventListener("keydown", onKey)
-        return () => window.removeEventListener("keydown", onKey)
-    }, [open, multiple, api])
+    }
 
     if (images.length === 0) return null
 
-    return (
-        <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
-            <DialogPrimitive.Portal>
-                <DialogPrimitive.Overlay className="fixed inset-0 z-[1100] bg-black/90 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" />
-                <DialogPrimitive.Content
-                    className="fixed inset-0 z-[1100] flex flex-col outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0"
-                    onOpenAutoFocus={(e) => e.preventDefault()}
-                >
-                    <DialogPrimitive.Title className="sr-only">
-                        {title || dict.lightbox.title}
-                    </DialogPrimitive.Title>
+    const picture = (img, i) => (
+        <div className="relative h-[78dvh] w-full">
+            <Image
+                src={img.src}
+                alt={img.alt || title || dict.lightbox.image(i + 1)}
+                fill
+                quality={90}
+                sizes="100vw"
+                className="select-none object-contain"
+            />
+        </div>
+    )
 
+    return (
+        <dialog
+            ref={dialogRef}
+            aria-label={title || dict.lightbox.title}
+            onKeyDown={onKeyDown}
+            className="sheet-dialog bg-black/90 text-white backdrop-blur-sm"
+        >
+            {/* Images load only while the viewer is open. */}
+            {open && (
+                <div className="flex h-full flex-col">
                     <div className="flex shrink-0 items-center justify-between px-5 py-4">
-                        <span className="font-mono text-xs tabular-nums text-white/70">
-                            {multiple ? `${current} / ${images.length}` : ""}
+                        <span className="font-mono text-xs tabular-nums text-white/70" aria-hidden>
+                            {multiple ? `${current + 1} / ${images.length}` : ""}
                         </span>
-                        <DialogPrimitive.Close
-                            className="rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                        <button
+                            type="button"
+                            onClick={() => dialogRef.current?.close()}
+                            autoFocus
                             aria-label={dict.lightbox.close}
+                            className="rounded-full p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                         >
-                            <X className="h-5 w-5" />
-                        </DialogPrimitive.Close>
+                            <X className="h-5 w-5" aria-hidden />
+                        </button>
                     </div>
 
                     <div className="relative flex min-h-0 flex-1 items-center justify-center pb-8">
                         {multiple ? (
                             <Carousel
-                                key={startIndex}
+                                ref={carouselRef}
+                                label={title || dict.lightbox.title}
+                                startIndex={startIndex}
+                                tone="dark"
+                                markers={false}
+                                onIndexChange={setCurrent}
                                 className="w-full"
-                                opts={{ loop: true, startIndex }}
-                                setApi={setApi}
+                                slideClassName="px-14 sm:px-20"
                             >
-                                <CarouselContent>
-                                    {images.map((img, i) => (
-                                        <CarouselItem key={i} className="px-10 sm:px-16">
-                                            <div className="relative h-[78vh] w-full">
-                                                <Image
-                                                    src={img.src}
-                                                    alt={img.alt || dict.lightbox.image(i + 1)}
-                                                    fill
-                                                    quality={90}
-                                                    sizes="100vw"
-                                                    className="object-contain select-none"
-                                                />
-                                            </div>
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                                <CarouselPrevious className="left-3 h-11 w-11 border-white/20 bg-black/40 text-white hover:bg-black/60 hover:text-white sm:left-5" />
-                                <CarouselNext className="right-3 h-11 w-11 border-white/20 bg-black/40 text-white hover:bg-black/60 hover:text-white sm:right-5" />
+                                {images.map((img, i) => picture(img, i))}
                             </Carousel>
                         ) : (
-                            <div className="relative h-[78vh] w-full px-6">
-                                <Image
-                                    src={images[0].src}
-                                    alt={images[0].alt || title || dict.lightbox.image(1)}
-                                    fill
-                                    quality={90}
-                                    sizes="100vw"
-                                    className="object-contain select-none"
-                                />
-                            </div>
+                            <div className="w-full px-6">{picture(images[0], 0)}</div>
                         )}
                     </div>
-                </DialogPrimitive.Content>
-            </DialogPrimitive.Portal>
-        </DialogPrimitive.Root>
+                </div>
+            )}
+        </dialog>
     )
 }
 

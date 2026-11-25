@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    experimental: {
+        // Lets React <ViewTransition> animate client-side navigations.
+        viewTransition: true,
+    },
+    images: {
+        formats: ["image/avif", "image/webp"],
+        // The lightbox renders at quality 90; Next 16 only allows listed values.
+        qualities: [75, 90],
+    },
     async redirects() {
         return [
             // Old portfolio index → new projects index

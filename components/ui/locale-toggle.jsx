@@ -29,8 +29,9 @@ export const LocaleToggle = () => {
             className="
                 flex h-8 min-w-8 items-center justify-center rounded-full px-2
                 border border-line font-mono text-[0.7rem] tracking-[0.08em]
-                text-muted-foreground transition-all duration-300
-                hover:bg-accent hover:text-foreground active:scale-90
+                text-muted-foreground transition-colors duration-300
+                hover:bg-accent hover:text-foreground
+                motion-safe:transition-[color,background-color,transform] motion-safe:active:scale-90
             "
         >
             {meta.short}

@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
+import { X } from "lucide-react"
+import { useEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 
 import { EMAIL } from "@/lib/site"
@@ -25,61 +26,57 @@ const isActive = (path, href) =>
 const SiteNav = () => {
     const pathname = usePathname()
     const { dict, href } = useI18n()
-    const [scrolled, setScrolled] = useState(false)
-    const [open, setOpen] = useState(false)
-    const headerRef = useRef(null)
     const menuRef = useRef(null)
     const toggleRef = useRef(null)
 
     const path = stripLocale(pathname)
 
+    // A modal <dialog> makes the page inert, traps focus, closes on Esc or
+    // the back gesture and returns focus to the toggle, so none of that is
+    // hand-rolled here. Only aria-expanded needs syncing.
     useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 8)
-        onScroll()
-        window.addEventListener("scroll", onScroll, { passive: true })
-        return () => window.removeEventListener("scroll", onScroll)
+        const menu = menuRef.current
+        if (!menu) return
+        const onClose = () => toggleRef.current?.setAttribute("aria-expanded", "false")
+        menu.addEventListener("close", onClose)
+        return () => menu.removeEventListener("close", onClose)
     }, [])
 
-    // While the menu is open, everything outside the header is inert, so focus
-    // stays in the menu; Escape closes it and returns focus to the toggle.
+    // The menu is hidden from md up; close it there so the page is not left inert.
     useEffect(() => {
-        if (!open) return
+        const wide = window.matchMedia("(min-width: 768px)")
+        const onChange = (e) => { if (e.matches) menuRef.current?.close() }
+        wide.addEventListener("change", onChange)
+        return () => wide.removeEventListener("change", onChange)
+    }, [])
 
-        const header = headerRef.current
-        const outside = [...document.body.children].filter((el) => !el.contains(header))
-        outside.forEach((el) => { el.inert = true })
-        document.documentElement.style.overflow = "hidden"
-        menuRef.current?.querySelector("a")?.focus()
+    // Close the menu once a link in it has navigated.
+    useEffect(() => {
+        if (menuRef.current?.open) menuRef.current.close()
+    }, [pathname])
 
-        const onKey = (e) => {
-            if (e.key !== "Escape") return
-            setOpen(false)
-            toggleRef.current?.focus()
-        }
-        window.addEventListener("keydown", onKey)
+    const openMenu = () => {
+        menuRef.current?.showModal()
+        toggleRef.current?.setAttribute("aria-expanded", "true")
+    }
 
-        return () => {
-            outside.forEach((el) => { el.inert = false })
-            document.documentElement.style.overflow = ""
-            window.removeEventListener("keydown", onKey)
-        }
-    }, [open])
+    const closeMenu = () => menuRef.current?.close()
+
+    const logo = (
+        <Link href={href("/")} className="group flex items-center gap-2.5" aria-label={`HeyTai, ${dict.nav.home}`}>
+            <span className="relative h-7 w-7">
+                <ThemeLogo sizes="28px" eager />
+            </span>
+            <span className="font-display text-lg font-extrabold leading-none">
+                <span className="mark-hover">HeyTai</span>
+            </span>
+        </Link>
+    )
 
     return (
-        <header
-            ref={headerRef}
-            className={`fixed inset-x-0 top-0 z-[1000] bg-background transition-[border-color] duration-300
-                ${scrolled ? "border-b border-line" : "border-b border-transparent"}`}
-        >
+        <header className="site-header fixed inset-x-0 top-0 z-[1000] bg-background">
             <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between px-6 md:px-10">
-                <Link href={href("/")} className="group flex items-center gap-2.5" aria-label={`HeyTai, ${dict.nav.home}`}>
-                    <span className="relative h-7 w-7">
-                        <ThemeLogo sizes="28px" priority />
-                    </span>
-                    <span className="font-display text-lg font-extrabold leading-none">
-                        <span className="mark-hover">HeyTai</span>
-                    </span>
-                </Link>
+                {logo}
 
                 <nav className="hidden items-center gap-1 md:flex" aria-label={dict.nav.main}>
                     {navItems.map((item) => {
@@ -110,53 +107,65 @@ const SiteNav = () => {
                     <button
                         ref={toggleRef}
                         type="button"
-                        onClick={() => setOpen((v) => !v)}
-                        aria-label={open ? dict.nav.closeMenu : dict.nav.openMenu}
-                        aria-expanded={open}
+                        onClick={openMenu}
+                        aria-label={dict.nav.openMenu}
+                        aria-expanded="false"
                         aria-controls="mobile-menu"
                         className="ml-1 flex h-10 w-10 flex-col items-center justify-center gap-[6px]"
                     >
-                        <span className={`h-[2px] w-6 bg-foreground transition-transform duration-300 ${open ? "translate-y-[4px] rotate-45" : ""}`} />
-                        <span className={`h-[2px] w-6 bg-foreground transition-transform duration-300 ${open ? "-translate-y-[4px] -rotate-45" : ""}`} />
+                        <span aria-hidden className="h-[2px] w-6 bg-foreground" />
+                        <span aria-hidden className="h-[2px] w-6 bg-foreground" />
                     </button>
                 </div>
             </div>
 
-            {/* Inside the header so the toggle stays usable while the rest of the page is inert. */}
-            <div
+            <dialog
                 id="mobile-menu"
                 ref={menuRef}
-                inert={!open}
-                className={`fixed inset-0 -z-10 bg-background transition-opacity duration-300 md:hidden
-                    ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+                aria-label={dict.nav.main}
+                className="sheet-dialog bg-background text-foreground md:hidden"
             >
-                <div className="flex h-full flex-col justify-between px-6 pb-10 pt-24">
-                    <nav className="flex flex-col border-t border-foreground" aria-label={dict.nav.main}>
-                        {navItems.map((item, i) => {
-                            const active = isActive(path, item.href)
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={href(item.href)}
-                                    onClick={() => setOpen(false)}
-                                    aria-current={active ? "page" : undefined}
-                                    className="group flex items-center gap-4 border-b border-line py-5"
-                                >
-                                    <NumberTab n={i + 1} />
-                                    <span className="font-display text-[2rem] font-extrabold leading-none">
-                                        <span className={active ? "mark" : "mark-hover"}>
-                                            {dict.nav[item.key]}
+                <div className="flex h-full flex-col">
+                    <div className="flex h-16 shrink-0 items-center justify-between px-6">
+                        {logo}
+                        <button
+                            type="button"
+                            onClick={closeMenu}
+                            aria-label={dict.nav.closeMenu}
+                            autoFocus
+                            className="flex h-10 w-10 items-center justify-center"
+                        >
+                            <X className="h-6 w-6" aria-hidden />
+                        </button>
+                    </div>
+                    <div className="flex flex-1 flex-col justify-between overflow-y-auto px-6 pb-10 pt-8">
+                        <nav className="flex flex-col border-t border-foreground" aria-label={dict.nav.main}>
+                            {navItems.map((item, i) => {
+                                const active = isActive(path, item.href)
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={href(item.href)}
+                                        onClick={closeMenu}
+                                        aria-current={active ? "page" : undefined}
+                                        className="group flex items-center gap-4 border-b border-line py-5"
+                                    >
+                                        <NumberTab n={i + 1} />
+                                        <span className="font-display text-[2rem] font-extrabold leading-none">
+                                            <span className={active ? "mark" : "mark-hover"}>
+                                                {dict.nav[item.key]}
+                                            </span>
                                         </span>
-                                    </span>
-                                </Link>
-                            )
-                        })}
-                    </nav>
-                    <a href={`mailto:${EMAIL}`} className="link-mark self-start font-mono text-sm">
-                        {EMAIL}
-                    </a>
+                                    </Link>
+                                )
+                            })}
+                        </nav>
+                        <a href={`mailto:${EMAIL}`} className="link-mark mt-10 self-start font-mono text-sm">
+                            {EMAIL}
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </dialog>
         </header>
     )
 }

@@ -6,10 +6,10 @@ const OthersLayout = async (props) => {
     const locale = resolveLocale((await props.params).locale);
 
     return (
-        <div className="flex min-h-screen flex-col">
-            <div className="flex-1">
+        <div className="flex min-h-dvh flex-col">
+            <main id="content" tabIndex={-1} className="flex-1 focus:outline-none">
                 {children}
-            </div>
+            </main>
             <SiteFooter locale={locale} />
         </div>
     );

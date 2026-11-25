@@ -21,7 +21,7 @@ const ContactRow = (props) => {
             </span>
             <ArrowUpRight
                 aria-hidden
-                className="hidden h-6 w-6 text-subtle transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground md:block"
+                className="hidden h-6 w-6 text-subtle transition duration-300 group-hover:text-foreground motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:translate-x-1 md:block"
             />
         </a>
     )
@@ -35,7 +35,7 @@ const ContactView = (props) => {
     return (
         <section className="mx-auto max-w-[1240px] px-6 pt-32 md:px-10 md:pt-44">
             <div className="relative mb-8 h-14 w-14 md:h-16 md:w-16">
-                <ThemeLogo sizes="64px" alt="HeyTai" priority />
+                <ThemeLogo sizes="64px" alt="HeyTai" eager />
             </div>
 
             <PageHeader
