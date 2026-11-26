@@ -37,11 +37,6 @@ const ProjectRow = (props) => {
 
                 <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
                     {project.role && <span className="label-mono">{project.role}</span>}
-                    {project.year && (
-                        <span className="font-mono text-[0.72rem] tabular-nums text-subtle">
-                            {project.year}
-                        </span>
-                    )}
                     {project.stack?.length > 0 && (
                         <span className="font-mono text-[0.72rem] text-subtle">
                             {project.stack.slice(0, 4).join(" · ")}

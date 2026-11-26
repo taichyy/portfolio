@@ -189,8 +189,6 @@ const ProjectDetail = (props) => {
                     <dl className="space-y-5 border-l border-foreground pl-5 text-sm">
                         <Meta k={dict.project.meta.category} v={categoryLabel} />
                         <Meta k={dict.project.meta.role} v={project.role} />
-                        <Meta k={dict.project.meta.year} v={project.year} />
-                        <Meta k={dict.project.meta.client} v={project.client} />
                         <Meta k={dict.project.meta.company} v={project.company} />
                         {project.stack?.length > 0 && (
                             <div>

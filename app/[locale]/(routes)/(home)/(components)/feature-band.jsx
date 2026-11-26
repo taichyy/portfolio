@@ -67,14 +67,6 @@ const FeatureBand = (props) => {
                                 <dd className="mt-1">{project.role}</dd>
                             </div>
                         )}
-                        {project.year && (
-                            <div>
-                                <dt className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-brand-ink/70">
-                                    {dict.project.meta.year}
-                                </dt>
-                                <dd className="mt-1 tabular-nums">{project.year}</dd>
-                            </div>
-                        )}
                         {project.stack?.length > 0 && (
                             <div className="col-span-2">
                                 <dt className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-brand-ink/70">
